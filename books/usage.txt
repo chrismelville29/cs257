@@ -1,0 +1,12 @@
+Jake Martens and Chris Melville
+searchbooks FILENAME  [-t | -a | -y] STRING
+
+Usage Statement: Command Invalid. Refer to manual for proper usage.
+
+The searchbooks function checks the contents of FILENAME, and returns a sorted list of books matching STRING. 
+
+-t 	Returns a list of books whose title includes the string inputted by the user, such as "Dark". If STRING is multiple words, encase it in quotation marks.
+
+-a	Returns a list of books whose author's name/s includes the string inputted by the user, e.g. "Brontë". If STRING is multiple words, encase it in quotation marks.
+
+-y	Returns a list of books whose publication date falls within the range specified by the user in the form "year1-year2", for example "1948-1970"
