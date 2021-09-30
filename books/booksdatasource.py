@@ -8,6 +8,7 @@
 '''
 
 import csv
+import argparse
 
 class Author:
     def __init__(self, surname='', given_name='', birth_year=None, death_year=None):
@@ -15,6 +16,14 @@ class Author:
         self.given_name = given_name
         self.birth_year = birth_year
         self.death_year = death_year
+
+    def __str__(self):
+        return(self.surname + ', ' + self.given_name + ' ' + str(self.birth_year) + '-' + str(self.death_year))
+
+    def is_equal(self, other_author):
+        if self.__str__() == other_author.__str__():
+            return True
+        return False
 
 class Book:
     def __init__(self, title='', publication_year=None, authors=[]):
@@ -39,7 +48,42 @@ class BooksDataSource:
             suitable instance variables for the BooksDataSource object containing
             a collection of Author objects and a collection of Book objects.
         '''
-        pass
+        self.books_set = set()
+        self.authors_set = set()
+        with open(books_csv_file_name,'r') as csv_file:
+            for row in csv.reader(csv_file):
+                curr_title = row[0]
+                curr_publication_year = int(row[1])
+                authors_of_book = []
+                curr_authors = row[2].split(' and ')
+                for author in curr_authors:
+                    author_list = author.split(' ',1)
+                    given_name = author_list[0]
+                    author_list_2 = author_list[1].split(' (')
+                    surname = author_list_2[0]
+                    birth_year = int(author_list_2[1][0:4])
+                    death_year = None
+                    if len(author_list_2[1]) > 8:
+                        death_year = int(author_list_2[1][5:9])
+                    author_as_object=Author(surname, given_name, birth_year, death_year)
+
+                    if self.existing_author(author_as_object) != None:
+                        author_as_object = self.existing_author(author_as_object)
+                    else:
+                        self.authors_set.add(author_as_object)
+                    authors_of_book.append(author_as_object)
+                curr_book = Book(curr_title, curr_publication_year, authors_of_book)
+                self.books_set.add(curr_book)
+
+        for author in self.authors_set:
+            print(author)
+
+    def existing_author(self, author_to_check):
+        for author in self.authors_set:
+            if author.is_equal(author_to_check):
+                return author
+        return None
+
 
     def authors(self, search_text=None):
         ''' Returns a list of all the Author objects in this data source whose names contain
@@ -76,3 +120,16 @@ class BooksDataSource:
         '''
         return []
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filename', type=str)
+    parser.add_argument('--title',type=str)
+    parser.add_argument('--author',type=str)
+    parser.add_argument('--date',type=int,nargs=2)
+
+
+    args = parser.parse_args()
+    csv_file = BooksDataSource(args.filename)
+
+
+main()
