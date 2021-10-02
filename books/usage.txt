@@ -1,12 +1,12 @@
 Jake Martens and Chris Melville
-searchbooks FILENAME  [-t | -a | -y] STRING
+python3 books.py FILENAME  [-t, --title STRING [-y, --year] | -a, --author STRING | -d, --date START END]
 
-Usage Statement: Command Invalid. Refer to manual for proper usage.
+The books.py function checks the contents of FILENAME, and returns a sorted list of books matching the criteria specified. Only one of -t, -a, or -d may be used at a time. If more than one is used, the program will throw an error.
 
-The searchbooks function checks the contents of FILENAME, and returns a sorted list of books matching STRING. 
+-t,--title 	Returns a list of books whose title includes the string inputted by the user, such as "Dark". If STRING is multiple words, encase it in quotation marks. If no argument specified, returns all books in database.
 
--t 	Returns a list of books whose title includes the string inputted by the user, such as "Dark". If STRING is multiple words, encase it in quotation marks.
+-y,--year	This is an optional flag that only has an effect on --title. When used, books will be sorted according to publication year. Otherwise, defaults to alphabetical order.
 
--a	Returns a list of books whose author's name/s includes the string inputted by the user, e.g. "Brontë". If STRING is multiple words, encase it in quotation marks.
+-a,--author	Returns a list of books whose author's name/s includes the string inputted by the user, e.g. "Brontë". If STRING is multiple words, encase it in quotation marks. If no author specified, returns all books in database.
 
--y	Returns a list of books whose publication date falls within the range specified by the user in the form "year1-year2", for example "1948-1970"
+-d,--date	Returns a list of books whose publication date falls within the range specified by the user in the form "START END", for example "1948 1996". This flag requires two arguments. If either START or END is not an int, the argument is processed as None. Thus, '1996 apple' will return any book published after 1996.
