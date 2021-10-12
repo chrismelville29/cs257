@@ -1,7 +1,12 @@
 Jake Martens and Chris Melville
+Revised by Chris Melville
 python3 books.py FILENAME  [-t, --title STRING [-y, --year] | -a, --author STRING | -d, --date START END]
 
 The books.py function checks the contents of FILENAME, and returns a sorted list of books matching the criteria specified. Only one of -t, -a, or -d may be used at a time. If more than one is used, the program will throw an error.
+
+FILENAME is the name of the csv file to be searched through, for instance 'books1.csv'
+
+-h Prints a list of which 
 
 -t,--title 	Returns a list of books whose title includes the string inputted by the user, such as "Dark". If STRING is multiple words, encase it in quotation marks. If no argument specified, returns all books in database.
 
@@ -9,4 +14,4 @@ The books.py function checks the contents of FILENAME, and returns a sorted list
 
 -a,--author	Returns a list of books whose author's name/s includes the string inputted by the user, e.g. "Brontë". If STRING is multiple words, encase it in quotation marks. If no author specified, returns all books in database.
 
--d,--date	Returns a list of books whose publication date falls within the range specified by the user in the form "START END", for example "1948 1996". This flag requires two arguments. If either START or END is not an int, the argument is processed as None. Thus, '1996 apple' will return any book published after 1996.
+-d,--date	Returns a list of books whose publication date falls within the range specified by the user in the form "START END", for example "1948 1996". If the second argument is left blank, it is assumed to be present day.

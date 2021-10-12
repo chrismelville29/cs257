@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Authors: Chris Melville and Jake Martens
+# Revised by Chris Melville
 
 '''
     booksdatasource.py
@@ -67,25 +68,17 @@ class Book:
         return self.publication_year
 
     def is_between_years(self, start_year, end_year):
-        try:
-            start_year = int(start_year)
-        except:
-            pass
-        try:
-            end_year = int(end_year)
-        except:
-            pass
         return self.is_before(end_year) and self.is_after(start_year)
 
     def is_after(self, year):
-        if type(year) == str:
+        if year == None:
             return True
         if self.publication_year >= year:
             return True
         return False
 
     def is_before(self, year):
-        if type(year) == str:
+        if year == None:
             return True
         if self.publication_year <= year:
             return True
@@ -115,29 +108,39 @@ class BooksDataSource:
 
     def load_data_from_csv(self, books_csv_file_name):
         with open(books_csv_file_name,'r') as csv_file:
+
             for row in csv.reader(csv_file):
                 curr_title = row[0]
                 curr_publication_year = int(row[1])
                 authors_of_book = []
                 curr_authors = row[2].split(' and ')
-                for author in curr_authors:
-                    list_for_given_name = author.split(' ',1)
-                    given_name = list_for_given_name[0]
-                    list_for_surname = list_for_given_name[1].split(' (')
-                    surname = list_for_surname[0]
-                    birth_year = int(list_for_surname[1][0:4])
-                    death_year = None
-                    if len(list_for_surname[1]) > 8:
-                        death_year = int(list_for_surname[1][5:9])
-                    author_as_object=Author(surname, given_name, birth_year, death_year)
 
-                    if self.existing_author(author_as_object) != None:
-                        author_as_object = self.existing_author(author_as_object)
+                for author in curr_authors:
+                    author_object = self.author_object_from_string(author)
+                    if self.existing_author(author_object) != None:
+                        author_object = self.existing_author(author_object)
                     else:
-                        self.authors_set.add(author_as_object)
-                    authors_of_book.append(author_as_object)
+                        self.authors_set.add(author_object)
+                    authors_of_book.append(author_object)
+
                 curr_book = Book(curr_title, curr_publication_year, authors_of_book)
                 self.books_set.add(curr_book)
+
+
+    def author_object_from_string(self, author):
+        list_for_given_name = author.split(' ',1)
+        given_name = list_for_given_name[0]
+        list_for_surname = list_for_given_name[1].split(' (')
+        surname = list_for_surname[0]
+        list_for_lifespan = list_for_surname[1].split('-')
+        birth_year = int(list_for_lifespan[0])
+        death_year = None
+        if list_for_lifespan[1] != ')':
+            death_year = int(list_for_lifespan[1].split(')')[0])
+        author_as_object=Author(surname, given_name, birth_year, death_year)
+        return author_as_object
+
+
 
     def existing_author(self, author_to_check):
         for author in self.authors_set:
@@ -200,10 +203,10 @@ class BooksDataSource:
             should be included.
         '''
         books_that_match = []
-        if start_year == None:
-            start_year = 'None'
-        if end_year == None:
-            end_year = 'None'
+        if start_year != None:
+            start_year = int(start_year);
+        if end_year != None:
+            end_year = int(end_year);
         for book in self.books_set:
             if book.is_between_years(start_year, end_year):
                 books_that_match.append(book)
