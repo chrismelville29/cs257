@@ -25,3 +25,12 @@ AND athlete_games.athlete_id = athletes.id
 AND NOCs.NOC = athlete_games.NOC
 GROUP BY NOCs.NOC
 ORDER BY medals_count DESC;
+
+SELECT DISTINCT athlete_games.athlete_id, athletes.given_name, athletes.surname, athlete_games.NOC
+FROM athletes, athlete_games, medals, games
+WHERE medals.medal != 'NA'
+AND medals.athlete_games_id = athlete_games.id
+AND athlete_games.athlete_id = athletes.id
+AND games.games = '2002 Winter'
+AND games.id = athlete_games.games_id
+ORDER BY athlete_games.NOC, athletes.surname;
