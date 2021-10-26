@@ -1,3 +1,9 @@
+CREATE TABLE nocs (
+noc text,
+region text,
+notes text
+);
+
 CREATE TABLE teams (
 id integer,
 team text
@@ -43,4 +49,3 @@ athlete_games_id integer,
 event_id integer,
 medal text
 );
-
