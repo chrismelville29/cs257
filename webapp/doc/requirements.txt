@@ -1,0 +1,21 @@
+Names: Chris Melville and Nate Przybyla
+
+Description: This dataset contains the results of all Men’s ATP Tour matches 2000-2016, including players, tournament and scores.
+https://www.kaggle.com/jordangoblet/atp-tour-20002016?select=Data.csv 
+
+Story: A tennis fan would like to know the results of Stan Wawrinka’s matches in the 2014 Australian Open, so they can see the path he took to victory.
+
+Implementation: There will be a text entry box which produces a dropdown list of all players whose names include the string typed, and the user can select Wawrinka from that list. From there, a page will come up which lists important statistics for Wawrinka (tournaments won, overall record, etc.). It will also list the years that Wawrinka has been active, and by clicking on a year, it will take the user to another page which lists all of Wawrinka’s results for the tournaments in that year.
+
+Story: A fan can get a list of all matches between Rafael Nadal and Novak Djokovic, so that he can learn who has the head to head edge.
+
+Implementation: There can be two text entry boxes. For each one, when the user starts typing a drop down menu can appear which includes all players whose names include the string being entered, and the user can choose the player whose matches she wants to view.
+
+Story: A tennis analyst looking for patterns in results wants to know the results of all the quarterfinal matches in the 2006 French Open.
+
+Implementation: There can be two text entry boxes. For each one, when the user starts typing a drop down menu can appear which includes all tournaments whose names include the string being entered, and the user can choose the tournament from this menu. This will lead to another dropdown menu with all the years in which the tournament took place. The user will next be taken to a page displaying all matches in the tournament, with an optional additional dropdown menu (*sigh*) allowing the user to view the matches from just one round of the tournament.
+
+Story: Rafael Nadal wants to see his record in ATP250 level tournaments, in order to see how good he is in lower-level tournaments.
+
+Implementation: There will be a text entry box which will show a drop down menu of different players when the user starts typing, and Nadal can be selected from that list. That will lead to a page which shows some basic stats for the player, and these stats can be filtered for tournament series to see the record for ATP250 tournaments.
+
