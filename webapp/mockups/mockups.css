@@ -3,6 +3,16 @@ body {
   margin: 40px;
 }
 
+p {
+  margin: 0px;
+  padding: 10px;
+}
+
+h2 {
+  margin: 0px;
+  padding: 0px;
+}
+
 
 /* Apply this class to all title text. Give normal pages h2 and the homepage h1 */
 .title {
