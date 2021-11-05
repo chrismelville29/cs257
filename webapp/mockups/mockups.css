@@ -3,24 +3,76 @@ body {
   margin: 40px;
 }
 
+
+/* Apply this class to all title text. Give normal pages h2 and the homepage h1 */
 .title {
     font-size: 500%;
     color: black;
     text-indent: 100px;
 }
 
+.subtitle {
+    font-size: 250%;
+    color: black;
+    text-indent: 160px;
+}
 
+.minititle {
+    font-size: 250%;
+    color: black;
+}
+
+/* Apply this class to all links to turn them blue */
 .link {
     color: blue;
 }
 
-/*
+.righten {
+    text-align: right;
+    padding-right: 15px;
+}
+
+
+.default_text {
+    font-size: 170%;
+}
+
+.center_table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.center_text {
+    text-align: center;
+}
+
+
+#half_block {
+    width: 50%;
+    float: left;
+}
+
+#one_third_block {
+    width: 33%;
+    float: left;
+}
+
+#two_thirds_block {
+    width: 67%;
+    float: left;
+}
+
+
+
+
+
 th {
   text-align: left;
   border: 1.5px solid black;
+  padding-right: 30px;
 }
 table, td {
   border: 0.5px solid black;
   border-collapse: collapse;
+  padding-right: 30px;
 }
-*/
