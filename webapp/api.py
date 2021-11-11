@@ -12,10 +12,10 @@ import psycopg2
 
 api = flask.Blueprint('api', __name__)
 
-@api.route('/')
-def get_players_from_search():
-    return get_general_json(get_players_json(), get_players_query(), 'Dj')
-    
+@api.route('/players/<name_string>')
+def get_players_from_search(name_string):
+    return get_general_json(get_players_json, get_players_query(), name_string)
+
 
 def get_connection():
     try:
@@ -26,9 +26,11 @@ def get_connection():
     return connection
 
 def get_cursor(query, connection, search_string):
+    print(query)
+    print(search_string)
     try:
         cursor = connection.cursor()
-        cursor.execute(query,(search_string,))
+        cursor.execute(query,('%'+search_string+'%',))
     except Exception as e:
         print(e)
         exit()
@@ -53,10 +55,8 @@ def get_players_json(cursor):
 
 
 
-
-
 def get_players_query():
-    return '''SELECT players.surname, players.initials
+    return '''SELECT players.id, players.surname, players.initials
     FROM players
     WHERE LOWER(players.surname) LIKE LOWER(%s)
     ORDER BY players.surname, players.initials;   '''

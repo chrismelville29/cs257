@@ -66,7 +66,7 @@ class Player:
         self.initials = initials
 
     def __eq__(self, other_player):
-        return self.surname == other_player.get_surname() and self.initials == other_player.get_initials()
+        return self.surname.lower() == other_player.get_surname().lower() and self.initials == other_player.get_initials()
 
     def to_csv(self):
         return [self.id, self.surname, self.initials]
@@ -202,6 +202,8 @@ class TennisDataSource:
     def split_name(self, name):
         if name[-1] == ' ':
             name = name[0:-1]
+        if name[-1] != '.':
+            name += '.'
         athlete_names = name.split(' ')
         athlete_name = ['','']
         athlete_name[1] = athlete_names.pop()
