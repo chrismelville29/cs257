@@ -12,9 +12,13 @@ import psycopg2
 
 api = flask.Blueprint('api', __name__)
 
-@api.route('/players/<name_string>')
-def get_players_from_search(name_string):
-    return get_general_json(get_players_json, get_players_query(), name_string)
+@api.route('/players/<search_string>')
+def get_players_from_search(search_string):
+    return get_general_json(get_players_json, get_players_query(), '%'+search_string+'%')
+
+@api.route('/tournaments/<search_string>')
+def get_tournaments_from_search(search_string):
+    return get_general_json(get_tournaments_json, get_tournaments_query(), '%'+search_string+'%')
 
 
 def get_connection():
@@ -30,7 +34,7 @@ def get_cursor(query, connection, search_string):
     print(search_string)
     try:
         cursor = connection.cursor()
-        cursor.execute(query,('%'+search_string+'%',))
+        cursor.execute(query,(search_string,))
     except Exception as e:
         print(e)
         exit()
@@ -53,6 +57,17 @@ def get_players_json(cursor):
         player_list.append(player)
     return json.dumps(player_list)
 
+def get_tournaments_json(cursor):
+    tournament_list = []
+    for row in cursor:
+        tournament = {
+        'id':row[0],
+        'name':row[1],
+        'location':row[2],
+        'surface':row[3]}
+        tournament_list.append(tournament)
+    return json.dumps(tournament_list)
+
 
 
 def get_players_query():
@@ -60,3 +75,10 @@ def get_players_query():
     FROM players
     WHERE LOWER(players.surname) LIKE LOWER(%s)
     ORDER BY players.surname, players.initials;   '''
+
+def get_tournaments_query():
+    return '''SELECT tournaments.id, tournaments.name, tournaments.location, surfaces.surface
+    FROM tournaments, surfaces
+    WHERE LOWER(tournaments.name) LIKE LOWER(%s)
+    AND tournaments.surface_id = surfaces.id
+    ORDER BY tournaments.name;  '''
