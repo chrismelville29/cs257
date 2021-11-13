@@ -68,7 +68,17 @@ def get_tournaments_json(cursor):
         tournament_list.append(tournament)
     return json.dumps(tournament_list)
 
-
+def get_versus_query():
+    return '''SELECT tournament_years.year, tournaments.name, players.surname, players.initials, 
+    matches.w_set_1, matches.l_set_1, matches.w_set_2, matches.l_set_2, matches.w_set_3, matches.l_set_3,
+    matches.w_set_4, matches.l_set_4, matches.w_set_5, matches.l_set_5
+    FROM tournament_years, tournaments, players, matches, player_tournaments
+    WHERE players.id = 643
+    AND matches.winner_id = player_tournaments.id
+    AND player_tournaments.player_id = players.id
+    AND player_tournaments.tournament_id = tournament_years.id
+    AND tournament_years.tournament_id = tournaments.id;
+    '''
 
 def get_players_query():
     return '''SELECT players.id, players.surname, players.initials
