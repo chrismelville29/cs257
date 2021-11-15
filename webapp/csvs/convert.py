@@ -20,6 +20,22 @@ class Surface:
     def get_surface(self):
         return self.surface
 
+class Round:
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+    def __eq__(self, other_round):
+        return other_round.get_name() == self.name
+
+    def to_csv(self):
+        return [self.id, self.name]
+
+    def get_id(self):
+        return self.id
+    def get_name(self):
+        return self.name
+
 class Tournament:
     def __init__(self, id, name, location, surface_id):
         self.id = id
@@ -99,9 +115,10 @@ class Player_Tournament:
         return self.tournament_id
 
 class Match:
-    def __init__(self, winner_id, loser_id, w_set_1, l_set_1, w_set_2, l_set_2, w_set_3, l_set_3, w_set_4, l_set_4, w_set_5, l_set_5):
+    def __init__(self, winner_id, loser_id, round_id, w_set_1, l_set_1, w_set_2, l_set_2, w_set_3, l_set_3, w_set_4, l_set_4, w_set_5, l_set_5):
         self.winner_id = winner_id
         self.loser_id = loser_id
+        self.round_id = round_id
         self.w_set_1 = w_set_1
         self.l_set_1 = l_set_1
         self.w_set_2 = w_set_2
@@ -113,8 +130,9 @@ class Match:
         self.w_set_5 = w_set_5
         self.l_set_5 = l_set_5
 
+
     def to_csv(self):
-        return [self.winner_id, self.loser_id, self.w_set_1, self.l_set_1, self.w_set_2, self.l_set_2, self.w_set_3, self.l_set_3, self.w_set_4, self.l_set_4, self.w_set_5, self.l_set_5]
+        return [self.winner_id, self.loser_id, self.round_id, self.w_set_1, self.l_set_1, self.w_set_2, self.l_set_2, self.w_set_3, self.l_set_3, self.w_set_4, self.l_set_4, self.w_set_5, self.l_set_5]
 
 class TennisDataSource:
     def __init__(self, tennis_csv):
@@ -124,10 +142,12 @@ class TennisDataSource:
         self.player_list = []
         self.player_tournament_list = []
         self.match_list = []
+        self.round_list = []
         self.temp_player_tournament_list = []
 
         self.load_data_from_csv(tennis_csv)
         self.write_data_to_csv('surfaces.csv',self.surface_list)
+        self.write_data_to_csv('rounds.csv',self.round_list)
         self.write_data_to_csv('tournaments.csv',self.tournament_list)
         self.write_data_to_csv('tournament_years.csv',self.tournament_year_list)
         self.write_data_to_csv('players.csv',self.player_list)
@@ -164,13 +184,14 @@ class TennisDataSource:
         winner_name = self.split_name(row[9])
         loser_name = self.split_name(row[10])
         curr_surface = self.existing_object(self.surface_list, Surface(len(self.surface_list), row[6]))
+        curr_round = self.existing_object(self.round_list, Round(len(self.round_list), row[7]))
         curr_tournament = self.existing_object(self.tournament_list, Tournament(len(self.tournament_list),self.strip_valencia_open(row[2]),row[1],curr_surface.get_id()))
         curr_tournament_year = self.existing_tournament_year(self.tournament_year_list, Tournament_Year(len(self.tournament_year_list),curr_tournament.get_id(),row[3].split('/')[2]))
         curr_winner = self.existing_object(self.player_list, Player(len(self.player_list),winner_name[0],winner_name[1]))
         curr_loser = self.existing_object(self.player_list, Player(len(self.player_list),loser_name[0],loser_name[1]))
         curr_winner_tournament = self.existing_object(self.temp_player_tournament_list, Player_Tournament(len(self.player_tournament_list)+len(self.temp_player_tournament_list),curr_winner.get_id(),curr_tournament_year.get_id(),row[11]))
         curr_loser_tournament = self.existing_object(self.temp_player_tournament_list, Player_Tournament(len(self.player_tournament_list)+len(self.temp_player_tournament_list),curr_loser.get_id(),curr_tournament_year.get_id(),row[12]))
-        self.match_list.append(Match(curr_winner_tournament.get_id(),curr_loser_tournament.get_id(),row[13],row[14],row[15],row[16],row[17],row[18],row[19],row[20],row[21],row[22]))
+        self.match_list.append(Match(curr_winner_tournament.get_id(),curr_loser_tournament.get_id(),curr_round.get_id(),row[13],row[14],row[15],row[16],row[17],row[18],row[19],row[20],row[21],row[22]))
 
 
     '''Checks to see if an object has been seen before. If it has,return the

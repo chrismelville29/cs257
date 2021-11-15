@@ -106,8 +106,11 @@ def get_rankings_query():
     AND players.id = %s;'''
 
 def get_tournament_wins_query():
-    return '''SELECT count(CASE WHEN matches.winner_id = %s THEN 1 ELSE NULL END) wins
-    FROM matches, 
+    return '''SELECT count(CASE WHEN players.id = %s THEN 1 ELSE NULL END) wins
+    FROM matches, player_tournaments, players
+    WHERE player_tournaments.player_id = players.id
+    AND matches.winner_id = player_tournaments.player_id
+    AND matches.
 
 def get_players_query():
     return '''SELECT players.id, players.surname, players.initials

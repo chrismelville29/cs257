@@ -64,6 +64,16 @@ CREATE TABLE public.players (
 
 
 --
+-- Name: rounds; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.rounds (
+    id integer,
+    name text
+);
+
+
+--
 -- Name: surfaces; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -95662,6 +95672,22 @@ COPY public.players (id, surname, initials) FROM stdin;
 1308	Myneni	S.
 1309	Ivashka	I.
 1310	Bublik	A.
+\.
+
+
+--
+-- Data for Name: rounds; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.rounds (id, name) FROM stdin;
+0	1st Round
+1	2nd Round
+2	Quarterfinals
+3	Semifinals
+4	The Final
+5	3rd Round
+6	4th Round
+7	Round Robin
 \.
 
 
