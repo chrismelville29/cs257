@@ -20,6 +20,22 @@ class Surface:
     def get_surface(self):
         return self.surface
 
+class Round:
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+    def __eq__(self, other_round):
+        return other_round.get_name() == self.name
+
+    def to_csv(self):
+        return [self.id, self.name]
+
+    def get_id(self):
+        return self.id
+    def get_round(self):
+        return self.name
+
 class Tournament:
     def __init__(self, id, name, location, surface_id):
         self.id = id
@@ -124,10 +140,12 @@ class TennisDataSource:
         self.player_list = []
         self.player_tournament_list = []
         self.match_list = []
+        self.round_list = []
         self.temp_player_tournament_list = []
 
         self.load_data_from_csv(tennis_csv)
         self.write_data_to_csv('surfaces.csv',self.surface_list)
+        self.write_data_to_csv('rounds.csv',self.round_list)
         self.write_data_to_csv('tournaments.csv',self.tournament_list)
         self.write_data_to_csv('tournament_years.csv',self.tournament_year_list)
         self.write_data_to_csv('players.csv',self.player_list)
@@ -164,6 +182,7 @@ class TennisDataSource:
         winner_name = self.split_name(row[9])
         loser_name = self.split_name(row[10])
         curr_surface = self.existing_object(self.surface_list, Surface(len(self.surface_list), row[6]))
+        curr_round = self.existing_object(self.round_list, Round(len(self.round_list), row[7]))
         curr_tournament = self.existing_object(self.tournament_list, Tournament(len(self.tournament_list),self.strip_valencia_open(row[2]),row[1],curr_surface.get_id()))
         curr_tournament_year = self.existing_tournament_year(self.tournament_year_list, Tournament_Year(len(self.tournament_year_list),curr_tournament.get_id(),row[3].split('/')[2]))
         curr_winner = self.existing_object(self.player_list, Player(len(self.player_list),winner_name[0],winner_name[1]))
