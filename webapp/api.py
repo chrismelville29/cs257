@@ -14,11 +14,11 @@ api = flask.Blueprint('api', __name__)
 
 @api.route('/players/<search_string>')
 def get_players_from_search(search_string):
-    return get_general_json(get_players_json, get_players_query(), '%'+search_string+'%')
+    return get_sql_data(get_players_json, get_players_query(), ('%'+search_string+'%',))
 
 @api.route('/tournaments/<search_string>')
 def get_tournaments_from_search(search_string):
-    return get_general_json(get_tournaments_json, get_tournaments_query(), '%'+search_string+'%')
+    return get_sql_data(get_tournaments_json, get_tournaments_query(), ('%'+search_string+'%',))
 
 
 def get_connection():
@@ -29,23 +29,23 @@ def get_connection():
         exit()
     return connection
 
-def get_cursor(query, connection, search_string):
+def get_cursor(query, connection, search_tuple):
     print(query)
     print(search_string)
     try:
         cursor = connection.cursor()
-        cursor.execute(query,(search_string,))
+        cursor.execute(query,search_tuple)
     except Exception as e:
         print(e)
         exit()
     return cursor
 
-def get_general_json(getter, query, search_string):
+def get_sql_data(getter, query, search_tuple):
     connection = get_connection()
-    cursor = get_cursor(query, connection, search_string)
-    json_to_return = getter(cursor)
+    cursor = get_cursor(query, connection, search_tuple)
+    data_to_return = getter(cursor)
     connection.close()
-    return json_to_return
+    return data_to_return
 
 def get_players_json(cursor):
     player_list = []
@@ -56,6 +56,22 @@ def get_players_json(cursor):
         'initials':row[2]}
         player_list.append(player)
     return json.dumps(player_list)
+
+def get_player_stats_json(cursor):
+    lowest_ranking = 1000
+    for row in cursor:
+        try:
+            if int(row[0] < lowest_ranking):
+                lowest_ranking = row[0]
+        except:
+            pass
+    if lowest_ranking == 1000:
+        return "NR"
+    return str(lowest_ranking)
+
+def get_tournament_wins(cursor):
+
+
 
 def get_tournaments_json(cursor):
     tournament_list = []
@@ -69,7 +85,7 @@ def get_tournaments_json(cursor):
     return json.dumps(tournament_list)
 
 def get_versus_query():
-    return '''SELECT tournament_years.year, tournaments.name, players.surname, players.initials, 
+    return '''SELECT tournament_years.year, tournaments.name, players.surname, players.initials,
     matches.w_set_1, matches.l_set_1, matches.w_set_2, matches.l_set_2, matches.w_set_3, matches.l_set_3,
     matches.w_set_4, matches.l_set_4, matches.w_set_5, matches.l_set_5
     FROM tournament_years, tournaments, players, matches, player_tournaments
@@ -79,6 +95,19 @@ def get_versus_query():
     AND player_tournaments.tournament_id = tournament_years.id
     AND tournament_years.tournament_id = tournaments.id;
     '''
+
+def get_rankings_query():
+    return '''SELECT player_tournaments.ranking
+    FROM player_tournaments, players, tournament_years
+    WHERE player_tournaments.player_id = players.id
+    AND tournament_years.id = player_tournaments.tournament_id
+    AND tournament_years.year < %s
+    AND tournament_years.year > %s
+    AND players.id = %s;'''
+
+def get_tournament_wins_query():
+    return '''SELECT count(CASE WHEN matches.winner_id = %s THEN 1 ELSE NULL END) wins
+    FROM matches, 
 
 def get_players_query():
     return '''SELECT players.id, players.surname, players.initials
