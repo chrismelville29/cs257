@@ -20,6 +20,28 @@ def get_players_from_search(search_string):
 def get_tournaments_from_search(search_string):
     return get_sql_data(get_tournaments_json, get_tournaments_query(), ('%'+search_string+'%',))
 
+@api.route('/player/<player_id>')
+def get_player_stats(player_id):
+    year = int(flask.request.args.get('year', default='0'))
+    start_year = year-1
+    end_year = year+1
+    if year == 0:
+        start_year = 1000
+        end_year = 3000
+    query_tuple = (start_year, end_year, int(player_id))
+    tournament_wins = get_sql_data(get_tournament_wins, get_tournament_wins_query(), query_tuple)
+    lowest_ranking = get_sql_data(get_lowest_ranking, get_lowest_ranking_query(), query_tuple)
+    record = get_sql_data(get_record, get_record_query(), query_tuple)
+    player_stats = {
+    'name':get_sql_data(get_name_from_id, get_name_from_id_query(),(player_id,)),
+    'tournament_wins':get_sql_data(get_tournament_wins, get_tournament_wins_query(), query_tuple),
+    'highest_ranking':get_sql_data(get_lowest_ranking, get_lowest_ranking_query(), query_tuple),
+    'record':get_sql_data(get_record, get_record_query(), query_tuple),
+    'years_active':get_sql_data(get_years_active, get_years_active_query(), (player_id,))}
+    return json.dumps(player_stats)
+
+
+
 
 def get_connection():
     try:
@@ -30,8 +52,7 @@ def get_connection():
     return connection
 
 def get_cursor(query, connection, search_tuple):
-    print(query)
-    print(search_string)
+    #print(query)
     try:
         cursor = connection.cursor()
         cursor.execute(query,search_tuple)
@@ -57,22 +78,6 @@ def get_players_json(cursor):
         player_list.append(player)
     return json.dumps(player_list)
 
-def get_player_stats_json(cursor):
-    lowest_ranking = 1000
-    for row in cursor:
-        try:
-            if int(row[0] < lowest_ranking):
-                lowest_ranking = row[0]
-        except:
-            pass
-    if lowest_ranking == 1000:
-        return "NR"
-    return str(lowest_ranking)
-
-def get_tournament_wins(cursor):
-
-
-
 def get_tournaments_json(cursor):
     tournament_list = []
     for row in cursor:
@@ -83,6 +88,40 @@ def get_tournaments_json(cursor):
         'surface':row[3]}
         tournament_list.append(tournament)
     return json.dumps(tournament_list)
+
+def get_lowest_ranking(cursor):
+    lowest_ranking = 1000
+    for row in cursor:
+        try:
+            if int(row[0]) < lowest_ranking:
+                lowest_ranking = int(row[0])
+        except:
+            pass
+    if lowest_ranking == 1000:
+        return "NR"
+    return str(lowest_ranking)
+
+def get_tournament_wins(cursor):
+    for row in cursor:
+        return str(row[0])
+
+def get_record(cursor):
+    for row in cursor:
+        return str(row[0]) + ' - ' + str(row[1])
+
+def get_years_active(cursor):
+    years_active = []
+    for row in cursor:
+        years_active.append(row[0])
+    return years_active
+
+def get_name_from_id(cursor):
+    for row in cursor:
+        return row[1] + ' ' + row[0]
+
+
+
+
 
 def get_versus_query():
     return '''SELECT tournament_years.year, tournaments.name, players.surname, players.initials,
@@ -96,22 +135,6 @@ def get_versus_query():
     AND tournament_years.tournament_id = tournaments.id;
     '''
 
-def get_rankings_query():
-    return '''SELECT player_tournaments.ranking
-    FROM player_tournaments, players, tournament_years
-    WHERE player_tournaments.player_id = players.id
-    AND tournament_years.id = player_tournaments.tournament_id
-    AND tournament_years.year < %s
-    AND tournament_years.year > %s
-    AND players.id = %s;'''
-
-def get_tournament_wins_query():
-    return '''SELECT count(CASE WHEN players.id = %s THEN 1 ELSE NULL END) wins
-    FROM matches, player_tournaments, players
-    WHERE player_tournaments.player_id = players.id
-    AND matches.winner_id = player_tournaments.player_id
-    AND matches.
-
 def get_players_query():
     return '''SELECT players.id, players.surname, players.initials
     FROM players
@@ -124,3 +147,47 @@ def get_tournaments_query():
     WHERE LOWER(tournaments.name) LIKE LOWER(%s)
     AND tournaments.surface_id = surfaces.id
     ORDER BY tournaments.name;  '''
+
+def get_lowest_ranking_query():
+    return '''SELECT player_tournaments.ranking
+    FROM player_tournaments, players, tournament_years
+    WHERE player_tournaments.player_id = players.id
+    AND tournament_years.id = player_tournaments.tournament_id
+    AND tournament_years.year > %s
+    AND tournament_years.year < %s
+    AND players.id = %s
+    ORDER BY player_tournaments.ranking DESC;'''
+
+def get_tournament_wins_query():
+    return '''SELECT count(CASE WHEN rounds.name = 'The Final' THEN 1 ELSE NULL END) wins
+    FROM matches, player_tournaments, players, rounds, tournament_years
+    WHERE player_tournaments.player_id = players.id
+    AND tournament_years.year > %s
+    AND tournament_years.year < %s
+    AND players.id = %s
+    AND matches.winner_id = player_tournaments.id
+    AND matches.round_id = rounds.id
+    AND player_tournaments.tournament_id = tournament_years.id;'''
+
+def get_record_query():
+    return '''SELECT count(CASE WHEN matches.winner_id = player_tournaments.id THEN 1 ELSE NULL END) wins,
+    count(CASE WHEN matches.loser_id = player_tournaments.id THEN 1 ELSE NULL END) losses
+    FROM matches, player_tournaments, players, tournament_years
+    WHERE tournament_years.year > %s
+    AND tournament_years.year < %s
+    AND players.id = %s
+    AND player_tournaments.tournament_id = tournament_years.id
+    AND players.id = player_tournaments.player_id;'''
+
+def get_years_active_query():
+    return '''SELECT DISTINCT tournament_years.year
+    FROM tournament_years, players, player_tournaments
+    WHERE players.id = %s
+    AND player_tournaments.player_id = players.id
+    AND tournament_years.id = player_tournaments.tournament_id
+    ORDER BY tournament_years.year ASC;'''
+
+def get_name_from_id_query():
+    return '''SELECT players.surname, players.initials
+    FROM players
+    WHERE players.id = %s;'''
