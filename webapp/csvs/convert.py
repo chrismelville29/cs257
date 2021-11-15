@@ -33,7 +33,7 @@ class Round:
 
     def get_id(self):
         return self.id
-    def get_round(self):
+    def get_name(self):
         return self.name
 
 class Tournament:
@@ -115,9 +115,10 @@ class Player_Tournament:
         return self.tournament_id
 
 class Match:
-    def __init__(self, winner_id, loser_id, w_set_1, l_set_1, w_set_2, l_set_2, w_set_3, l_set_3, w_set_4, l_set_4, w_set_5, l_set_5):
+    def __init__(self, winner_id, loser_id, round_id, w_set_1, l_set_1, w_set_2, l_set_2, w_set_3, l_set_3, w_set_4, l_set_4, w_set_5, l_set_5):
         self.winner_id = winner_id
         self.loser_id = loser_id
+        self.round_id = round_id
         self.w_set_1 = w_set_1
         self.l_set_1 = l_set_1
         self.w_set_2 = w_set_2
@@ -129,8 +130,9 @@ class Match:
         self.w_set_5 = w_set_5
         self.l_set_5 = l_set_5
 
+
     def to_csv(self):
-        return [self.winner_id, self.loser_id, self.w_set_1, self.l_set_1, self.w_set_2, self.l_set_2, self.w_set_3, self.l_set_3, self.w_set_4, self.l_set_4, self.w_set_5, self.l_set_5]
+        return [self.winner_id, self.loser_id, self.round_id, self.w_set_1, self.l_set_1, self.w_set_2, self.l_set_2, self.w_set_3, self.l_set_3, self.w_set_4, self.l_set_4, self.w_set_5, self.l_set_5]
 
 class TennisDataSource:
     def __init__(self, tennis_csv):
@@ -189,7 +191,7 @@ class TennisDataSource:
         curr_loser = self.existing_object(self.player_list, Player(len(self.player_list),loser_name[0],loser_name[1]))
         curr_winner_tournament = self.existing_object(self.temp_player_tournament_list, Player_Tournament(len(self.player_tournament_list)+len(self.temp_player_tournament_list),curr_winner.get_id(),curr_tournament_year.get_id(),row[11]))
         curr_loser_tournament = self.existing_object(self.temp_player_tournament_list, Player_Tournament(len(self.player_tournament_list)+len(self.temp_player_tournament_list),curr_loser.get_id(),curr_tournament_year.get_id(),row[12]))
-        self.match_list.append(Match(curr_winner_tournament.get_id(),curr_loser_tournament.get_id(),row[13],row[14],row[15],row[16],row[17],row[18],row[19],row[20],row[21],row[22]))
+        self.match_list.append(Match(curr_winner_tournament.get_id(),curr_loser_tournament.get_id(),curr_round.get_id(),row[13],row[14],row[15],row[16],row[17],row[18],row[19],row[20],row[21],row[22]))
 
 
     '''Checks to see if an object has been seen before. If it has,return the
