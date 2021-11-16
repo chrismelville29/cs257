@@ -73,6 +73,10 @@ def get_player_stats(player_id):
 
 @api.route('/tournament/<tournament_id>')
 def get_tournament_info(tournament_id):
+    year = int(flask.request.args.get('year', default='0'))
+    tournament_info = {
+    'name': get_sql_data(get_name_from_id, get_name_from_id_query(), tournament_id)
+    }
     return json.dumps(tournament_info)
 
 def get_connection():
@@ -157,7 +161,11 @@ def get_year_tournaments(cursor):
         tournaments.append(row[0])
     return tournaments
 
-
+def get_years_held(cursor):
+    years = []
+    for row in cursor:
+        years.append(row[0])
+    return years
 
 
 
@@ -251,4 +259,6 @@ def get_surface_query():
 
 def get_tournament_years_query():
     return '''SELECT tournament_years.year
-    FROM tournaments, tournament_years;'''
+    FROM tournaments, tournament_years
+    WHERE tournaments.id = %s
+    AND tournaments.id = tournament_years.tournament_id;'''
