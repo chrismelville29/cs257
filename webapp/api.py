@@ -134,11 +134,20 @@ def get_year_tournaments(cursor):
 
 
 
+
+
 def get_players_query():
     return '''SELECT players.id, players.surname, players.initials
     FROM players
     WHERE LOWER(players.surname) LIKE LOWER(%s)
     ORDER BY players.surname, players.initials;   '''
+
+def get_players_at_tournament_query():
+    return '''SELECT player_tournaments.id, players.surname, players.initials
+    FROM players, player_tournaments
+    WHERE LOWER(players.surname) LIKE LOWER(%s)
+    AND players.id = player_tournaments.player_id
+    AND player_tournaments.tournament_id = %s; '''
 
 def get_tournaments_query():
     return '''SELECT tournaments.id, tournaments.name, tournaments.location, surfaces.surface
