@@ -116,7 +116,7 @@ def get_record(cursor):
 def get_years_active(cursor):
     years_active = []
     for row in cursor:
-        years_active.append(row[0])
+        years_active.append(str(row[0]))
     return years_active
 
 def get_name_from_id(cursor):

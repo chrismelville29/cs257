@@ -1,6 +1,7 @@
+let playerID = document.getElementsByName('player_id')[0].content;
+
 function initialize() {
-    let playerID = document.getElementsByName('player_id')[0].content;
-    let url = getAPIBaseURL() + '/player/' + playerID;
+    let url = getBaseURL() + '/api/player/' + playerID;
 
     fetch(url, {method: 'get'})
 
@@ -24,17 +25,17 @@ window.onload = initialize;
 
 function getYearsActiveHTML(years) {
     let listContents = "";
+    let baseURL = getBaseURL();
     for(let i = 0; i < years.length; i++) {
-        listContents+="<li>"+years[i]+"</li>";
+        let nextLine = '<li><a href="'+baseURL+'/player/'+playerID+'?year='+years[i]+'">'+years[i]+'</a></li>';
+        listContents+=nextLine;
     }
     return listContents;
 }
 
-
-function getAPIBaseURL() {
+function getBaseURL() {
     let baseURL = window.location.protocol
                     + '//' + window.location.hostname
-                    + ':' + window.location.port
-                    + '/api';
+                    + ':' + window.location.port;
     return baseURL;
 }
