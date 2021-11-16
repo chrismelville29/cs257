@@ -25,6 +25,17 @@ def get_help():
     'year_tournaments': only on the single year page - the tournaments the athlete played in in the selected year
     EXAMPLES: /player/6?year=2004 --> {"name": "R. Federer", "tournament_wins": "7", "highest_ranking": "2", "record": "71 - 16", "year": 2003, "year_tournaments": [*a very long list of tournaments*]}
     /player/5 --> {"name": "P. Baccanello", "tournament_wins": "0", "highest_ranking": "135", "record": "2 - 7", "years_active": ["2000", "2003", "2004", "2005"]}
+    
+    REQUEST: /tournament/<tournament_id>
+    GET parameters: year (optional) -- gives information on one specific year of a tournament
+    RESPONSE: A JSON dictionary which contains the following fields:
+    'name': tournament's name,
+    'surface': the court surface the tournament is played on,
+    'location': the location the tournament is played at,
+    'years_held': only in the full tournament page - the years that a tournament was held,
+    'winner': only in the single year page - the winner of the tournament in the selected year,
+    'runner-up': only in the single year page - the second place finisher of the tournament in the selected year
+    EXAMPLES: /tournament/5 --> {"name": Australian Open, "surface": Hard, "location": Melbourne, "years_held": ["2000", "2001", ..., "2015", "2016"]}
     '''
 
 @api.route('/players/<search_string>')
