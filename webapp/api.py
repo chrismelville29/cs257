@@ -36,8 +36,12 @@ def get_player_stats(player_id):
     'name':get_sql_data(get_name_from_id, get_name_from_id_query(),(player_id,)),
     'tournament_wins':get_sql_data(get_tournament_wins, get_tournament_wins_query(), query_tuple),
     'highest_ranking':get_sql_data(get_lowest_ranking, get_lowest_ranking_query(), query_tuple),
-    'record':get_sql_data(get_record, get_record_query(), query_tuple),
-    'years_active':get_sql_data(get_years_active, get_years_active_query(), (player_id,))}
+    'record':get_sql_data(get_record, get_record_query(), query_tuple)}
+    if year == 0:
+        player_stats['years_active'] = get_sql_data(get_years_active, get_years_active_query(), (player_id,))
+    else:
+        player_stats['year'] = year
+        player_stats['year_tournaments'] = get_sql_data(get_year_tournaments, get_year_tournaments_query(), (year,player_id))
     return json.dumps(player_stats)
 
 
@@ -119,21 +123,16 @@ def get_name_from_id(cursor):
     for row in cursor:
         return row[1] + ' ' + row[0]
 
+def get_year_tournaments(cursor):
+    tournaments = []
+    for row in cursor:
+        tournaments.append(row[0])
+    return tournaments
 
 
 
 
-def get_versus_query():
-    return '''SELECT tournament_years.year, tournaments.name, matches.w_set_1, matches.l_set_1,
-    matches.w_set_2, matches.l_set_2, matches.w_set_3, matches.l_set_3, matches.w_set_4,
-    matches.l_set_4, matches.w_set_5, matches.l_set_5
-    FROM tournament_years, tournaments, players, matches, player_tournaments
-    WHERE players.id = 643
-    AND matches.winner_id = player_tournaments.id
-    AND player_tournaments.player_id = players.id
-    AND player_tournaments.tournament_id = tournament_years.id
-    AND tournament_years.tournament_id = tournaments.id;
-    '''
+
 
 def get_players_query():
     return '''SELECT players.id, players.surname, players.initials
@@ -186,6 +185,16 @@ def get_years_active_query():
     AND player_tournaments.player_id = players.id
     AND tournament_years.id = player_tournaments.tournament_id
     ORDER BY tournament_years.year ASC;'''
+
+def get_year_tournaments_query():
+    return '''SELECT tournaments.name
+    FROM tournaments, player_tournaments, tournament_years, players
+    WHERE tournament_years.year = %s
+    AND players.id = %s
+    AND players.id = player_tournaments.player_id
+    AND player_tournaments.tournament_id = tournament_years.id
+    AND tournament_years.tournament_id = tournaments.id
+    ORDER BY tournaments.name;'''
 
 def get_name_from_id_query():
     return '''SELECT players.surname, players.initials

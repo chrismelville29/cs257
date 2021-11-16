@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Player Information</title>
+        <title>Player Year Information</title>
         <meta charset="UTF-8">
-        <meta name = "player_id" content = {{player_id}} >
+        <meta name = "player_id" content = {{player_id}}>
+        <meta name = "year" content = {{year}}>
         <link rel="stylesheet" href="../static/general.css">
-        <script type="text/javascript" src="../static/player_page.js"></script>
+        <script type="text/javascript" src="../static/player_year_page.js"></script>
     </head>
 
     <body>
         <h2 id = "player_name" class="title"></h2>
+        <h2 id = "year_subtitle" class = "subtitle"></h2>
 
         <div id = "half_block">
-            <p class="default_text">Years Active:</p>
+            <p class="default_text">Tournaments Entered:</p>
 
-            <p><ul id = "years_active"></ul></p>
+            <p><ul id = "tournaments"></ul></p>
 
         </div>
 
