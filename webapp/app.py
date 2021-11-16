@@ -22,6 +22,7 @@ def load_player_page(player_id):
         return flask.render_template('player_page.html',player_id = player_id)
     return flask.render_template('player_year_page.html',player_id = player_id, year = str(year))
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('A tennis application, including API & DB')
     parser.add_argument('host', help='the host to run on')

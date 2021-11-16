@@ -12,6 +12,21 @@ import psycopg2
 
 api = flask.Blueprint('api', __name__)
 
+@api.route('/help')
+def get_help():
+    return '''REQUEST: /player/<player_id>
+    GET parameters: year (optional) -- gives information on a player's year instead of whole career
+    RESPONSE: A JSON dictionary which contains the following fields:
+    'name': athlete's name,
+    'tournament_wins': how many tournaments the athlete won, either over full career or selected year,
+    'highest_ranking': the highest ranking athlete reached, either over full career or selected year,
+    'record': the athlete's wins and losses, either over full career or selected year,
+    'years_active': only on the full career page - the years in which the athlete played in at least one tournament,
+    'year_tournaments': only on the single year page - the tournaments the athlete played in in the selected year
+    EXAMPLES: /player/6?year=2004 --> {"name": "R. Federer", "tournament_wins": "7", "highest_ranking": "2", "record": "71 - 16", "year": 2003, "year_tournaments": [*a very long list of tournaments*]}
+    /player/5 --> {"name": "P. Baccanello", "tournament_wins": "0", "highest_ranking": "135", "record": "2 - 7", "years_active": ["2000", "2003", "2004", "2005"]}
+    '''
+
 @api.route('/players/<search_string>')
 def get_players_from_search(search_string):
     return get_sql_data(get_players_json, get_players_query(), ('%'+search_string+'%',))
