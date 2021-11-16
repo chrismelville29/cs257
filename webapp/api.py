@@ -45,7 +45,9 @@ def get_player_stats(player_id):
     return json.dumps(player_stats)
 
 
-
+@api.route('/tournament/<tournament_id>')
+def get_tournament_info(tournament_id):
+    return json.dumps(tournament_info)
 
 def get_connection():
     try:
@@ -200,3 +202,18 @@ def get_name_from_id_query():
     return '''SELECT players.surname, players.initials
     FROM players
     WHERE players.id = %s;'''
+
+def get_tournament_name_from_id_query():
+    return '''SELECT tournaments.name
+    FROM tournaments
+    WHERE tournaments.id = %s;'''
+
+def get_surface_query():
+    return '''SELECT surface.surfaces
+    FROM surfaces, tournaments
+    WHERE tournaments.id = %s
+    AND tournaments.surface_id = surfaces.surface;'''
+
+def get_tournament_years_query():
+    return '''SELECT tournament_years.year
+    FROM tournaments, tournament_years;'''

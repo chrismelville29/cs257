@@ -6,6 +6,12 @@ function initialize() {
 
     .then((response) => response.json())
 
+    .then(function(tournament_info) {
+        document.getElementById('tournament_name').innerHTML = tournament_info['name'];
+        document.getElementById('surface').innerHTML = tournament_info['surface'];
+        document.getElementById('location').innerHTML = tournament_info['location'];
+    })
+
     .catch(function(error) {
         console.log(error);
     });
@@ -13,6 +19,9 @@ function initialize() {
 
 window.onload = initialize;
 
+function getTournamentYearsHTML(years) {
+    
+}
 
 function getAPIBaseURL() {
     let baseURL = window.location.protocol
