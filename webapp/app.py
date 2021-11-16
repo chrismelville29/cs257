@@ -12,8 +12,12 @@ app = flask.Flask(__name__, static_folder='static', template_folder='templates')
 app.register_blueprint(api.api, url_prefix='/api')
 
 @app.route('/')
-def home():
+def load_homepage():
     return flask.render_template('homepage.html')
+
+@app.route('/player/<player_id>')
+def load_player_page(player_id):
+    return flask.render_template('player_page.html',player_id = player_id)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('A tennis application, including API & DB')

@@ -7,6 +7,11 @@ p {
     padding: 10px;
 }
 
+ul {
+  list-style-type: none;
+  padding: 10px;
+}
+
 .default_text {
     font-size: 170%;
 }
@@ -15,6 +20,12 @@ p {
     font-size: 500%;
     color: black;
     text-indent: 100px;
+}
+
+.subtitle {
+    font-size: 300%;
+    color: black;
+    text-indent: 150px;
 }
 
 #half_block {

@@ -124,9 +124,9 @@ def get_name_from_id(cursor):
 
 
 def get_versus_query():
-    return '''SELECT tournament_years.year, tournaments.name, players.surname, players.initials,
-    matches.w_set_1, matches.l_set_1, matches.w_set_2, matches.l_set_2, matches.w_set_3, matches.l_set_3,
-    matches.w_set_4, matches.l_set_4, matches.w_set_5, matches.l_set_5
+    return '''SELECT tournament_years.year, tournaments.name, matches.w_set_1, matches.l_set_1,
+    matches.w_set_2, matches.l_set_2, matches.w_set_3, matches.l_set_3, matches.w_set_4,
+    matches.l_set_4, matches.w_set_5, matches.l_set_5
     FROM tournament_years, tournaments, players, matches, player_tournaments
     WHERE players.id = 643
     AND matches.winner_id = player_tournaments.id
