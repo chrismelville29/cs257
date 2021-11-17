@@ -25,7 +25,7 @@ def get_help():
     'year_tournaments': only on the single year page - the tournaments the athlete played in in the selected year
     EXAMPLES: /player/6?year=2004 --> {"name": "R. Federer", "tournament_wins": "7", "highest_ranking": "2", "record": "71 - 16", "year": 2003, "year_tournaments": [*a very long list of tournaments*]}
     /player/5 --> {"name": "P. Baccanello", "tournament_wins": "0", "highest_ranking": "135", "record": "2 - 7", "years_active": ["2000", "2003", "2004", "2005"]}
-    
+
     REQUEST: /tournament/<tournament_id>
     GET parameters: year (optional) -- gives information on one specific year of a tournament
     RESPONSE: A JSON dictionary which contains the following fields:
@@ -55,9 +55,9 @@ def get_player_stats(player_id):
         start_year = 1000
         end_year = 3000
     query_tuple = (start_year, end_year, int(player_id))
-    tournament_wins = get_sql_data(get_tournament_wins, get_tournament_wins_query(), query_tuple)
-    lowest_ranking = get_sql_data(get_lowest_ranking, get_lowest_ranking_query(), query_tuple)
-    record = get_sql_data(get_record, get_record_query(), query_tuple)
+    #tournament_wins = get_sql_data(get_tournament_wins, get_tournament_wins_query(), query_tuple)
+    #lowest_ranking = get_sql_data(get_lowest_ranking, get_lowest_ranking_query(), query_tuple)
+    #record = get_sql_data(get_record, get_record_query(), query_tuple)
     player_stats = {
     'name':get_sql_data(get_name_from_id, get_name_from_id_query(),(player_id,)),
     'tournament_wins':get_sql_data(get_tournament_wins, get_tournament_wins_query(), query_tuple),
@@ -74,8 +74,15 @@ def get_player_stats(player_id):
 @api.route('/tournament/<tournament_id>')
 def get_tournament_info(tournament_id):
     year = int(flask.request.args.get('year', default='0'))
+    start_year = year-1
+    end_year = year+1
+    if year == 0:
+        start_year = 1000
+        end_year = 3000
+    query_tuple = (start_year, end_year, int(tournament_id))
     tournament_info = {
-    'name': get_sql_data(get_name_from_id, get_name_from_id_query(), tournament_id)
+    'name':get_sql_data(get_name_from_id, get_name_from_id_query(), (tournament_id,)),
+    'surface':
     }
     return json.dumps(tournament_info)
 
@@ -252,7 +259,7 @@ def get_tournament_name_from_id_query():
     WHERE tournaments.id = %s;'''
 
 def get_surface_query():
-    return '''SELECT surface.surfaces
+    return '''SELECT surfaces.surface
     FROM surfaces, tournaments
     WHERE tournaments.id = %s
     AND tournaments.surface_id = surfaces.surface;'''

@@ -22,6 +22,12 @@ def load_player_page(player_id):
         return flask.render_template('player_page.html',player_id = player_id)
     return flask.render_template('player_year_page.html',player_id = player_id, year = str(year))
 
+@app.route('/tournament/<tournament_id>')
+def load_tournament_page(tournament_id):
+    year = int(flask.request.args.get('year', default='0'))
+    if year == 0:
+        return flask.render_template('tournament_page.html', tournament_id = tournament_id)
+    return flask.render_template('tournament_year_page.html', tournament_id=tournament_id, year = str(year))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('A tennis application, including API & DB')
