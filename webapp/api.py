@@ -81,9 +81,12 @@ def get_tournament_info(tournament_id):
         end_year = 3000
     query_tuple = (start_year, end_year, int(tournament_id))
     tournament_info = {
-    'name':get_sql_data(get_name_from_id, get_name_from_id_query(), (tournament_id,)),
-    'surface':
+    'name':get_sql_data(get_name_from_id, get_tournament_name_from_id_query(), (tournament_id,)),
+    'surface':get_sql_data(get_name_from_id, get_surface_from_id_query(), (tournament_id,)),
+    'location':get_sql_data(get_name_from_id, get_location_from_id_query(), (tournament_id,))
     }
+    if year == 0:
+        tournament_info['years_held'] = get_sql_data(get_years_active, get_tournament_years_query(), (tournament_id,))
     return json.dumps(tournament_info)
 
 def get_connection():
@@ -160,7 +163,10 @@ def get_years_active(cursor):
 
 def get_name_from_id(cursor):
     for row in cursor:
-        return row[1] + ' ' + row[0]
+        try:
+            return row[1] + ' ' + row[0]
+        except:
+            return row[0]
 
 def get_year_tournaments(cursor):
     tournaments = []
@@ -258,11 +264,16 @@ def get_tournament_name_from_id_query():
     FROM tournaments
     WHERE tournaments.id = %s;'''
 
-def get_surface_query():
+def get_surface_from_id_query():
     return '''SELECT surfaces.surface
     FROM surfaces, tournaments
     WHERE tournaments.id = %s
     AND tournaments.surface_id = surfaces.surface;'''
+
+def get_location_from_id_query():
+    return '''SELECT tournaments.location
+    FROM tournaments
+    WHERE tournaments.id = %s;'''
 
 def get_tournament_years_query():
     return '''SELECT tournament_years.year
