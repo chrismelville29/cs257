@@ -29,6 +29,10 @@ def load_tournament_page(tournament_id):
         return flask.render_template('tournament_page.html', tournament_id = tournament_id)
     return flask.render_template('tournament_year_page.html', tournament_id=tournament_id, year = str(year))
 
+@app.route('/player_tournament/<player_tournament_id>')
+def load_player_tournament_page(player_tournament_id):
+    return flask.render_template('player_tournament_page.html')
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('A tennis application, including API & DB')
     parser.add_argument('host', help='the host to run on')

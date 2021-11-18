@@ -3,15 +3,20 @@
     <head>
         <title>Tournament</title>
         <meta charset="UTF-8">
+        <meta name = "tournament_id" content = {{tournament_id}}>
         <link rel="stylesheet" href="../static/general.css">
-        <script type="text/javascript" src="../static/tournament.js"></script>
+        <script type="text/javascript" src="../static/tournament_page.js"></script>
     </head>
 
     <body>
         <h2 id="tournament_name" class="title"></h2>
 
-        <p class="subtitle">Surface: </p>
-        <p class="subtitle">Location: </p>
+        <p class="subtitle">Surface: <span id = "surface"></span></p>
+        <p class="subtitle">Location: <span id = "location"></span></p>
+
+        <p class="default_text">Years Held:</p>
+
+        <p><ul id = "years_held"></ul></p>
 
         <p><table id="tournament_years" class="default_text"></table></p>
     </body>

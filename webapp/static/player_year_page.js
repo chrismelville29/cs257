@@ -1,6 +1,13 @@
+let playerID = document.getElementsByName('player_id')[0].content;
+let year = document.getElementsByName('year')[0].content;
+
 function initialize() {
-    let playerID = document.getElementsByName('player_id')[0].content;
-    let year = document.getElementsByName('year')[0].content;
+    loadPlayerYear();
+}
+
+window.onload = initialize;
+
+function loadPlayerYear() {
     let url = getAPIBaseURL() + '/player/' + playerID + '?year='+year;
 
     fetch(url, {method: 'get'})
@@ -20,8 +27,6 @@ function initialize() {
         console.log(error);
     });
 }
-
-window.onload = initialize;
 
 function getTournamentsHTML(tournaments) {
     let listContents = "";

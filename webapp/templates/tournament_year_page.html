@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Player Year Information</title>
+        <meta charset="UTF-8">
+        <meta name = "tournament_id" content = {{tournament_id}}>
+        <meta name = "year" content = {{year}}>
+        <link rel="stylesheet" href="../static/general.css">
+        <script type="text/javascript" src="../static/tournament_year_page.js"></script>
+    </head>
+
+    <body>
+        <h2 id = "tournament_name" class="title"></h2>
+
+        <div id = "half_block">
+            <p class="default_text">Search Players by Name</p>
+
+            <p><input id="player_string" type="text" />
+              <button id="player_search_button">Search for Players</button>
+            </p>
+
+            <p><table id="player_results" class="default_text"></table></p>
+        </div>
+
+        <div id = "half_block">
+            <ul class = "default_text">
+                <li>Career Record: <span id = "career_record"></span></li>
+                <li>Tournament Wins: <span id = "tournament_wins"></span></li>
+                <li>Highest Ranking: <span id = "highest_ranking"></span></li>
+            </ul>
+
+        </div>
+    </body>
+</html>

@@ -1,6 +1,12 @@
 let playerID = document.getElementsByName('player_id')[0].content;
 
 function initialize() {
+    loadPlayer();
+}
+
+window.onload = initialize;
+
+function loadPlayer() {
     let url = getBaseURL() + '/api/player/' + playerID;
 
     fetch(url, {method: 'get'})
@@ -20,8 +26,6 @@ function initialize() {
         console.log(error);
     });
 }
-
-window.onload = initialize;
 
 function getYearsActiveHTML(years) {
     let listContents = "";
