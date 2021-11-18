@@ -31,7 +31,7 @@ def load_tournament_page(tournament_id):
 
 @app.route('/player_tournament/<player_tournament_id>')
 def load_player_tournament_page(player_tournament_id):
-    return flask.render_template('player_tournament_page.html')
+    return flask.render_template('player_tournament_page.html',player_tournament_id=player_tournament_id)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('A tennis application, including API & DB')

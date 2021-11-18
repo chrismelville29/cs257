@@ -149,7 +149,8 @@ def get_player_tournament_info_json(player_tournament_id):
     player_tournament_info = {
     'self_info':get_sql_data(get_player, get_player_tournament_from_id_query(),(player_tournament_id,)),
     'losers':get_sql_data(get_opponents, get_losers_query(), (player_tournament_id,)),
-    'winners':get_sql_data(get_opponents, get_winners_query(), (player_tournament_id,))
+    'winners':get_sql_data(get_opponents, get_winners_query(), (player_tournament_id,)),
+    'tournament':get_sql_data(get_tournament_from_player, get_tournament_year_query(), (player_tournament_id,))
     }
     return json.dumps(player_tournament_info)
 
@@ -226,6 +227,9 @@ def get_score_string(row):
         score_string += ', '+row[i]+'-'+row[i+1]
     return score_string
 
+def get_tournament_from_player(cursor):
+    for row in cursor:
+        return str(row[1]) +' '+ row[0]
 
 
 
@@ -364,3 +368,10 @@ def get_winners_query():
     AND players.id = player_tournaments.player_id
     AND matches.winner_id = player_tournaments.id
     AND matches.loser_id = %s;'''
+
+def get_tournament_year_query():
+    return '''SELECT tournaments.name, tournament_years.year
+    FROM tournaments, tournament_years, player_tournaments
+    WHERE player_tournaments.id = %s
+    AND player_tournaments.tournament_id = tournament_years.id
+    AND tournament_years.tournament_id = tournaments.id;'''
