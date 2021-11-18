@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Player Year Information</title>
+        <title>Tournament-Year Information</title>
         <meta charset="UTF-8">
-        <meta name = "tournament_id" content = {{tournament_id}}>
-        <meta name = "year" content = {{year}}>
+        <meta name = "tournament_year_id" content = {{tournament_year_id}}>
         <link rel="stylesheet" href="../static/general.css">
         <script type="text/javascript" src="../static/tournament_year_page.js"></script>
     </head>
 
     <body>
         <h2 id = "tournament_name" class="title"></h2>
+
+        <p class="subtitle">Surface: <span id = "surface"></span></p>
+        <p class="subtitle">Location: <span id = "location"></span></p>
+        <p class="subtitle">Champion: <span id = "champion"></span></p>
 
         <div id = "half_block">
             <p class="default_text">Search Players by Name</p>
@@ -19,15 +22,11 @@
               <button id="player_search_button">Search for Players</button>
             </p>
 
-            <p><table id="player_results" class="default_text"></table></p>
+            <p><ul id="player_results" class="default_text"></ul></p>
         </div>
 
         <div id = "half_block">
-            <ul class = "default_text">
-                <li>Career Record: <span id = "career_record"></span></li>
-                <li>Tournament Wins: <span id = "tournament_wins"></span></li>
-                <li>Highest Ranking: <span id = "highest_ranking"></span></li>
-            </ul>
+            <p class="default_text">Search by Round</p>
 
         </div>
     </body>

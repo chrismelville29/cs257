@@ -1,5 +1,4 @@
-let playerID = document.getElementsByName('tournament_id')[0].content;
-let year = document.getElementsByName('year')[0].content;
+let tournamentYearID = document.getElementsByName('tournament_year_id')[0].content;
 
 function initialize() {
     loadTournamentYear();
@@ -9,24 +8,27 @@ function initialize() {
 
 }
 
+window.onload = initialize;
+
 function loadTournamentYear() {
-    let url = getBaseURL() + '/api/tournament/' + tournamentID + '?year='+year;
+    let url = getBaseURL() + '/api/tournament_year/' + tournamentYearID;
 
     fetch(url, {method: 'get'})
 
     .then((response) => response.json())
 
-    .then(function(tournament_info) {
-        document.getElementById('tournament_name').innerHTML = tournament_info['year']+' '+tournament_info['name'];
-        let tournamentsHTML = getTournamentsHTML(player_stats['year_tournaments']);
-        document.getElementById('tournaments').innerHTML = tournamentsHTML;
+    .then(function(tournament_year_info) {
+        document.getElementById('tournament_name').innerHTML = tournament_year_info['name'];
+        document.getElementById('surface').innerHTML = tournament_year_info['surface'];
+        document.getElementById('location').innerHTML = tournament_year_info['location'];
+        document.getElementById('champion').innerHTML = tournament_year_info['champion']['name'];
     })
 
     .catch(function(error) {
         console.log(error);
     });
 }
-window.onload = initialize;
+
 
 function getTournamentsHTML(tournaments) {
     let listContents = "";
@@ -38,25 +40,22 @@ function getTournamentsHTML(tournaments) {
 
 
 function onPlayerSearchButton() {
-    let playerStringElement = document.getElementById('player_string');
-    let url = getBaseURL() + '/api/players/' + playerStringElement.value
+    let playerString = document.getElementById('player_string');
+    let url = getBaseURL() + '/api/players/' + playerString.value+'?tournament_year_id='+tournamentYearID;
 
     fetch(url, {method: 'get'})
 
     .then((response) => response.json())
 
     .then(function(players) {
-        let tableBody = '<tr> <th> Player Name </th> </tr>';
+        let listBody = '';
         for (let i = 0; i < players.length; i++) {
             let player = players[i];
-            let linkText = player['initials']+' '+player['surname'];
-            tableBody += '<tr><td><a href="/player/'+player['id']+'">'+linkText+'</a></td></tr>\n';
+            let linkText = player['name'];
+            listBody += '<li><a href="/player_tournament/'+player['id']+'">'+linkText+'</a></li>';
         }
 
-        let playersTable = document.getElementById('player_results');
-        if (playersTable) {
-            playersTable.innerHTML = tableBody;
-        }
+        document.getElementById('player_results').innerHTML=listBody;
     })
 
     .catch(function(error) {

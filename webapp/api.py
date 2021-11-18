@@ -43,6 +43,7 @@ def get_players_from_search(search_string):
     tournament_year_id = int(flask.request.args.get('tournament_year_id', default = '-1'))
     if tournament_year_id == -1:
         return get_sql_data(get_players_json, get_players_query(), ('%'+search_string+'%',))
+    return get_sql_data(get_players_json, get_player_tournaments_query(), (tournament_year_id,'%'+search_string+'%'))
 
 @api.route('/tournaments/<search_string>')
 def get_tournaments_from_search(search_string):
@@ -58,9 +59,14 @@ def get_tournament_info(tournament_id):
     year = int(flask.request.args.get('year', default='0'))
     return get_tournament_info_json(year,tournament_id)
 
+@api.route('/tournament_year/<tournament_year_id>')
+def get_tournament_year_info(tournament_year_id):
+    return get_tournament_year_info_json(tournament_year_id)
+
 @api.route('/player_tournament/<player_tournament_id>')
 def get_player_tournament_matches(player_tournament_id):
     return get_player_tournament_info_json(player_tournament_id)
+
 
 def get_connection():
     try:
@@ -91,8 +97,7 @@ def get_players_json(cursor):
     for row in cursor:
         player = {
         'id':row[0],
-        'surname':row[1],
-        'initials':row[2]}
+        'name':row[2]+' '+row[1]}
         player_list.append(player)
     return json.dumps(player_list)
 
@@ -106,6 +111,7 @@ def get_tournaments_json(cursor):
         'surface':row[3]}
         tournament_list.append(tournament)
     return json.dumps(tournament_list)
+
 
 def get_player_stats_json(year, player_id):
     start_year = year-1
@@ -142,10 +148,20 @@ def get_tournament_info_json(year, tournament_id):
         tournament_info['years_held'] = get_sql_data(get_years_active, get_tournament_years_query(), (tournament_id,))
     return json.dumps(tournament_info)
 
+def get_tournament_year_info_json(tournament_year_id):
+    champion = get_sql_data(get_tournament_champ, get_tournament_champ_query(), (tournament_year_id,))
+    tournament_year_info = {
+    'id':int(tournament_year_id),
+    'name':get_sql_data(get_name_from_id, get_tournament_year_from_id_query(),(tournament_year_id,)),
+    'surface':get_sql_data(get_name_from_id, get_surface_from_year_query(),(tournament_year_id,)),
+    'location':get_sql_data(get_name_from_id, get_location_from_year_query(),(tournament_year_id,)),
+    'champion':champion,
+    'rounds':get_sql_data(get_rounds,get_rounds_query(),(champion['id'],))
+    }
+    return json.dumps(tournament_year_info)
+
+
 def get_player_tournament_info_json(player_tournament_id):
-    self_information = get_sql_data(get_players_json, get_player_tournament_from_id_query(),(player_tournament_id,))
-    losers = get_sql_data(get_opponents, get_losers_query(), (player_tournament_id,))
-    winners = get_sql_data(get_opponents, get_winners_query(), (player_tournament_id,))
     player_tournament_info = {
     'self_info':get_sql_data(get_player, get_player_tournament_from_id_query(),(player_tournament_id,)),
     'losers':get_sql_data(get_opponents, get_losers_query(), (player_tournament_id,)),
@@ -231,6 +247,19 @@ def get_tournament_from_player(cursor):
     for row in cursor:
         return str(row[1]) +' '+ row[0]
 
+def get_rounds(cursor):
+    rounds = []
+    for row in cursor:
+        rounds.append(row[0])
+    return rounds
+
+def get_tournament_champ(cursor):
+    for row in cursor:
+        champ = {
+        'id':row[0],
+        'name':row[2]+' '+row[1]
+        }
+    return champ
 
 
 
@@ -324,16 +353,35 @@ def get_tournament_name_from_id_query():
     FROM tournaments
     WHERE tournaments.id = %s;'''
 
+def get_tournament_year_from_id_query():
+    return '''SELECT tournaments.name, tournament_years.year
+    FROM tournaments, tournament_years
+    WHERE tournament_years.id = %s
+    AND tournament_years.tournament_id = tournaments.id;'''
+
 def get_surface_from_id_query():
     return '''SELECT surfaces.surface
     FROM surfaces, tournaments
     WHERE tournaments.id = %s
     AND tournaments.surface_id = surfaces.id;'''
 
+def get_surface_from_year_query():
+    return '''SELECT surfaces.surface
+    FROM surfaces, tournaments, tournament_years
+    WHERE surfaces.id = tournaments.surface_id
+    AND tournaments.id = tournament_years.tournament_id
+    AND tournament_years.id = %s;'''
+
 def get_location_from_id_query():
     return '''SELECT tournaments.location
     FROM tournaments
     WHERE tournaments.id = %s;'''
+
+def get_location_from_year_query():
+    return '''SELECT tournaments.location
+    FROM tournaments, tournament_years
+    WHERE tournaments.id = tournament_years.tournament_id
+    AND tournament_years.id = %s;'''
 
 def get_tournament_years_query():
     return '''SELECT tournament_years.year
@@ -345,9 +393,10 @@ def get_player_tournaments_query():
     return '''SELECT player_tournaments.id, players.surname, players.initials
     FROM player_tournaments, players, tournament_years
     WHERE tournament_years.id = player_tournaments.tournament_id
+    AND tournament_years.id = %s
     AND LOWER(players.surname) LIKE LOWER(%s)
     AND players.id = player_tournaments.player_id
-    AND tournament_years.id = %s;'''
+    ORDER BY players.surname;'''
 
 def get_losers_query():
     return '''SELECT players.id, players.surname, players.initials, rounds.name,
@@ -375,3 +424,19 @@ def get_tournament_year_query():
     WHERE player_tournaments.id = %s
     AND player_tournaments.tournament_id = tournament_years.id
     AND tournament_years.tournament_id = tournaments.id;'''
+
+def get_rounds_query():
+    return '''SELECT rounds.name
+    FROM rounds, matches
+    WHERE rounds.id = matches.round_id
+    AND matches.winner_id = %s;'''
+
+def get_tournament_champ_query():
+    return '''SELECT player_tournaments.id, players.surname, players.initials
+    FROM players, player_tournaments, matches, tournament_years, rounds
+    WHERE rounds.name = 'The Final'
+    AND tournament_years.id = %s
+    AND matches.round_id = rounds.id
+    AND tournament_years.id = player_tournaments.tournament_id
+    AND players.id = player_tournaments.player_id
+    AND matches.winner_id = player_tournaments.id;'''

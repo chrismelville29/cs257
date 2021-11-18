@@ -20,7 +20,7 @@ function onPlayerSearchButton() {
         let tableBody = '<tr> <th> Player Name </th> </tr>';
         for (let i = 0; i < players.length; i++) {
             let player = players[i];
-            let linkText = player['initials']+' '+player['surname'];
+            let linkText = player['name'];
             tableBody += '<tr><td><a href="/player/'+player['id']+'">'+linkText+'</a></td></tr>\n';
         }
 
