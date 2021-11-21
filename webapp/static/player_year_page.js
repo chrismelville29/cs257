@@ -8,7 +8,7 @@ function initialize() {
 window.onload = initialize;
 
 function loadPlayerYear() {
-    let url = getAPIBaseURL() + '/player/' + playerID + '?year='+year;
+    let url = getBaseURL() + '/api/player/' + playerID + '?year='+year;
 
     fetch(url, {method: 'get'})
 
@@ -31,16 +31,16 @@ function loadPlayerYear() {
 function getTournamentsHTML(tournaments) {
     let listContents = "";
     for(let i = 0; i < tournaments.length; i++) {
-        listContents+="<li>"+tournaments[i]+"</li>";
+        tournament = tournaments[i];
+        listContents+='<li><a href="'+getBaseURL()+'/tournament_year/'+tournament['id']+'">'+tournament['name']+'</a></li>';
     }
     return listContents;
 }
 
 
-function getAPIBaseURL() {
+function getBaseURL() {
     let baseURL = window.location.protocol
                     + '//' + window.location.hostname
-                    + ':' + window.location.port
-                    + '/api';
+                    + ':' + window.location.port;
     return baseURL;
 }
