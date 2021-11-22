@@ -21,7 +21,7 @@ function loadTournamentYear() {
         document.getElementById('tournament_name').innerHTML = tournament_year_info['name'];
         document.getElementById('surface').innerHTML = tournament_year_info['surface'];
         document.getElementById('location').innerHTML = tournament_year_info['location'];
-        document.getElementById('champion').innerHTML = tournament_year_info['champion']['name'];
+        document.getElementById('champion').innerHTML = getChampionHTML(tournament_year_info['champion']);
     })
 
     .catch(function(error) {
@@ -29,6 +29,9 @@ function loadTournamentYear() {
     });
 }
 
+function getChampionHTML(champion_info) {
+    return '<a href="'+getBaseURL()+'/player_tournament/'+champion_info['id']+'">'+champion_info['name']+'</a>'
+}
 
 function getTournamentsHTML(tournaments) {
     let listContents = "";

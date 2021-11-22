@@ -15,7 +15,7 @@ function loadMatches() {
 
     .then(function(player_tournament_info) {
         document.getElementById('tournament_name').innerHTML = player_tournament_info['tournament'];
-        document.getElementById('player_name').innerHTML = player_tournament_info['self_info']['name'];
+        document.getElementById('player_name').innerHTML = getNameHTML(player_tournament_info['self_info']);
         let resultsHTML = getResultsHTML(player_tournament_info);
         document.getElementById('matches').innerHTML = resultsHTML;
     })
@@ -23,6 +23,10 @@ function loadMatches() {
     .catch(function(error) {
         console.log(error);
     });
+}
+
+function getNameHTML(player_info) {
+    return '<a href="'+getBaseURL()+'/player/'+player_info['id']+'">'+player_info['name']+'</a>'
 }
 
 function getResultsHTML(player_tournament_info) {
@@ -52,6 +56,7 @@ function getResult(selfInfo, result, isLoss) {
     }
     return opponentLink+' def. '+selfLink+' '+result['score'];
 }
+
 
 function getBaseURL() {
     let baseURL = window.location.protocol

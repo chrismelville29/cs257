@@ -182,6 +182,8 @@ def get_player_tournament_info_json(player_tournament_id):
 def get_tournament_round_json(tournament_year_id, round_id):
     match_ids = get_sql_data(get_match_ids_by_round, get_round_query(), (round_id,tournament_year_id))
     matches = get_matches_by_round(match_ids)
+    round_information = {
+    }
     return json.dumps(matches)
 
 
@@ -292,9 +294,10 @@ def get_match_ids_by_round(cursor):
     matches = []
     for row in cursor:
         match = {
-        'winner_id':row[0],
-        'loser_id':row[1],
-        'score':get_score_string(row,2)
+        'round_name':row[0],
+        'winner_id':row[1],
+        'loser_id':row[2],
+        'score':get_score_string(row,3)
         }
         matches.append(match)
     return matches
@@ -303,6 +306,7 @@ def get_matches_by_round(matches_ids):
     matches = []
     for match_id in matches_ids:
         match = {
+        'round_name':match_id['round_name'],
         'winner':get_sql_data(get_player,get_player_tournament_from_id_query(), (match_id['winner_id'],)),
         'loser':get_sql_data(get_player,get_player_tournament_from_id_query(), (match_id['loser_id'],)),
         'score':match_id['score']
@@ -455,7 +459,8 @@ def get_losers_query():
     WHERE rounds.id = matches.round_id
     AND players.id = player_tournaments.player_id
     AND matches.loser_id = player_tournaments.id
-    AND matches.winner_id = %s;'''
+    AND matches.winner_id = %s
+    ORDER BY rounds.name;'''
 
 def get_winners_query():
     return '''SELECT players.id, players.surname, players.initials, rounds.name,
@@ -491,7 +496,7 @@ def get_tournament_champ_query():
     AND matches.winner_id = player_tournaments.id;'''
 
 def get_round_query():
-    return '''SELECT matches.winner_id, matches.loser_id, matches.w_set_1, matches.l_set_1,
+    return '''SELECT rounds.name, matches.winner_id, matches.loser_id, matches.w_set_1, matches.l_set_1,
     matches.w_set_2, matches.l_set_2, matches.w_set_3, matches.l_set_3, matches.w_set_4,
     matches.l_set_4, matches.w_set_5, matches.l_set_5
     FROM matches, rounds, player_tournaments, tournament_years
