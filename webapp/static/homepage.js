@@ -10,7 +10,7 @@ window.onload = initialize;
 
 function onPlayerSearchButton() {
     let playerStringElement = document.getElementById('player_string');
-    let url = getAPIBaseURL() + '/players/' + playerStringElement.value
+    let url = getBaseURL() + '/api/players/' + playerStringElement.value
 
     fetch(url, {method: 'get'})
 
@@ -38,7 +38,7 @@ function onPlayerSearchButton() {
 
 function onTournamentSearchButton() {
     let tournamentStringElement = document.getElementById('tournament_string');
-    let url = getAPIBaseURL() + '/tournaments/' + tournamentStringElement.value
+    let url = getBaseURL() + '/api/tournaments/' + tournamentStringElement.value
 
     fetch(url, {method: 'get'})
 
@@ -48,7 +48,8 @@ function onTournamentSearchButton() {
         let tableBody = '<tr><th> Tournament Name </th><th> Location </th><th> Surface </th></tr>';
         for (let i = 0; i < tournaments.length; i++) {
             let tournament = tournaments[i];
-            tableBody += '<tr><td>' + tournament['name'] + '</td><td>' + tournament['location'] + '</td><td>' + tournament['surface'] + '</td></tr>\n';
+            let link = '<a href="'+getBaseURL()+'/tournament/'+tournament['id']+'">'+tournament['name']+'</a>';
+            tableBody += '<tr><td>' + link + '</td><td>' + tournament['location'] + '</td><td>' + tournament['surface'] + '</td></tr>\n';
         }
 
         let tournamentsTable = document.getElementById('tournament_results');
@@ -63,10 +64,9 @@ function onTournamentSearchButton() {
 
 }
 
-function getAPIBaseURL() {
+function getBaseURL() {
     let baseURL = window.location.protocol
                     + '//' + window.location.hostname
-                    + ':' + window.location.port
-                    + '/api';
+                    + ':' + window.location.port;
     return baseURL;
 }

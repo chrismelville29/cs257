@@ -6,6 +6,10 @@ function initialize() {
     let playerButton = document.getElementById('player_search_button');
     playerButton.onclick = onPlayerSearchButton;
 
+    let roundButton = document.getElementById('round_selector_button');
+    roundButton.onclick = onRoundSelectorButton;
+
+
 }
 
 window.onload = initialize;
@@ -17,11 +21,12 @@ function loadTournamentYear() {
 
     .then((response) => response.json())
 
-    .then(function(tournament_year_info) {
-        document.getElementById('tournament_name').innerHTML = tournament_year_info['name'];
-        document.getElementById('surface').innerHTML = tournament_year_info['surface'];
-        document.getElementById('location').innerHTML = tournament_year_info['location'];
-        document.getElementById('champion').innerHTML = getChampionHTML(tournament_year_info['champion']);
+    .then(function(tournamentYearInfo) {
+        document.getElementById('tournament_name').innerHTML = tournamentYearInfo['name'];
+        document.getElementById('surface').innerHTML = tournamentYearInfo['surface'];
+        document.getElementById('location').innerHTML = tournamentYearInfo['location'];
+        document.getElementById('champion').innerHTML = getChampionHTML(tournamentYearInfo['champion']);
+        document.getElementById('round_selector').innerHTML = getRoundsHTML(tournamentYearInfo['rounds']);
     })
 
     .catch(function(error) {
@@ -29,16 +34,18 @@ function loadTournamentYear() {
     });
 }
 
-function getChampionHTML(champion_info) {
-    return '<a href="'+getBaseURL()+'/player_tournament/'+champion_info['id']+'">'+champion_info['name']+'</a>'
+function getChampionHTML(championInfo) {
+    let baseURL = getBaseURL();
+    return '<a href="'+baseURL+'/player_tournament/'+championInfo['id']+'">'+championInfo['name']+'</a>';
 }
 
-function getTournamentsHTML(tournaments) {
-    let listContents = "";
-    for(let i = 0; i < tournaments.length; i++) {
-        listContents+="<li>"+tournaments[i]+"</li>";
+function getRoundsHTML(rounds) {
+    let optionsHTML = '';
+    for(let i = 0; i < rounds.length; i++) {
+        let round = rounds[i];
+        optionsHTML+='<option value='+round['id'].toString()+'>'+round['name']+'</option>'
     }
-    return listContents;
+    return optionsHTML;
 }
 
 
@@ -65,6 +72,12 @@ function onPlayerSearchButton() {
         console.log(error);
     });
 
+}
+
+function onRoundSelectorButton() {
+    let round = document.getElementById('round_selector');
+    let link = getBaseURL()+'/tournament_year/'+tournamentYearID+'?round_id='+round.value;
+    window.location.assign(link);
 }
 
 

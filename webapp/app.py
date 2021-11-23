@@ -24,14 +24,14 @@ def load_player_page(player_id):
 
 @app.route('/tournament/<tournament_id>')
 def load_tournament_page(tournament_id):
-    year = int(flask.request.args.get('year', default='0'))
-    if year == 0:
-        return flask.render_template('tournament_page.html', tournament_id = tournament_id)
-    return flask.render_template('tournament_year_page.html', tournament_id=tournament_id, year = str(year))
+    return flask.render_template('tournament_page.html', tournament_id=tournament_id)
 
 @app.route('/tournament_year/<tournament_year_id>')
 def load_tournament_year_page(tournament_year_id):
-    return flask.render_template('tournament_year_page.html',tournament_year_id=tournament_year_id)
+    round_id = int(flask.request.args.get('round_id', default='-1'))
+    if round_id == -1:
+        return flask.render_template('tournament_year_page.html',tournament_year_id=tournament_year_id)
+    return flask.render_template('tournament_round_page.html',tournament_year_id=tournament_year_id,round_id=round_id)
 
 @app.route('/player_tournament/<player_tournament_id>')
 def load_player_tournament_page(player_tournament_id):
