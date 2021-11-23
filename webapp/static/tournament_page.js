@@ -30,8 +30,9 @@ function getTournamentYearsHTML(years) {
     let listContents = "";
     let baseURL = getBaseURL();
     for(let i = 0; i < years.length; i++) {
-        let nextLine = '<li>'+years[i]+'</li>';
-        listContents+=nextLine;
+        let year = years[i];
+        let link = '<li><a href="'+getBaseURL()+'/tournament_year/'+year['id']+'">'+year['year']+'</a></li>';
+        listContents+=link;
     }
     return listContents;
 }
