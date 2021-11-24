@@ -12,6 +12,12 @@ ul {
   padding-left: 70px;
 }
 
+.results_table, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding-right: 30px;
+}
+
 .default_text {
     font-size: 170%;
 }
@@ -25,11 +31,20 @@ ul {
 .subtitle {
     font-size: 300%;
     color: black;
-    text-indent: 150px;
+}
+
+.center_table {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .center_text {
     text-align: center;
+}
+
+.thick_line {
+    height: 3px;
+    background-color: black;
 }
 
 #half_block {
