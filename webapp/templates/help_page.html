@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Help</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="../static/general.css">
+        <script type="text/javascript" src="../static/tournament_round_page.js"></script>
+    </head>
+
+    <body>
+
+        <h2 class="title">Help</h2>
+
+        <!-- /player -->
+        <p class="default_text">REQUEST: /player/&#60;player_id&#62;</p>
+        <p class="default_text">GET PARAMETERS: </p>
+        <p>year(optional), yields specific information about one year, not the player's whole career</p>
+        <p class="default_text">RESPONSE: A JSON dictionary with the following fields:</p>
+        <ul>
+            <li>'name': athlete's name</li>
+            <li>'tournament_wins': tournaments won by athlete in given year/career</li>
+            <li>'highest_ranking': highest ranking achieved by athlete in given year/career</li>
+            <li>'record': record in matches in given year/career</li>
+            <li>Only without Get parameter: 'years_active': years in which the athlete played</li>
+            <li>Only with Get parameter: 'year': the year whose information is being displayed</li>
+            <li>Only with Get parameter: 'year_tournaments': tournaments the athlete participated in in the given year</li>
+        </ul>
+        <p class="default_text">EXAMPLES:</p>
+        <p>/player/7 --> {"name": "J. Knippschild", "tournament_wins": "0", "highest_ranking": "85", "record": "14 - 28", "years_active": ["2000", "2001", "2002"]}</p>
+        <p>/player/7?year=2002 --> {"name": "J. Knippschild", "tournament_wins": "0", "highest_ranking": "247", "record": "1 - 2", "year": 2002, "year_tournaments": [{"id": 168, "name": "French Open"}, {"id": 178, "name": "Mercedes Cup"}]}</p>
+        <br><br><br><br>
+
+        <!-- /players -->
+        <p class="default_text">REQUEST: /players/&#60;search_string&#62;</p>
+        <p class="default_text">GET PARAMETERS: </p>
+        <p>tournament_year_id(optional), narrows the search to only players who played in a particular tournament</p>
+        <p class="default_text">RESPONSE: A list of JSON dictionaries with the following fields:</p>
+        <ul>
+            <li>'id': athlete's id</li>
+            <li>'name': athlete's name</li>
+        </ul>
+        <p class="default_text">EXAMPLES:</p>
+        <p>/players/dj --> [{"id": 1160, "name": "L. Djere"}, {"id": 913, "name": "M. Djokovic"}, {"id": 643, "name": "N. Djokovic"}]</p>
+        <p>/players/se?tournament_year_id=17 --> [{"id": 687, "name": "S. Dosedel"}, {"id": 685, "name": "G. Rusedski"}]</p>
+        <br><br><br><br>
+
+        <!-- /tournaments -->
+        <p class="default_text">REQUEST: /tournaments/&#60;search_string&#62;</p>
+        <p class="default_text">RESPONSE: A list of JSON dictionaries with the following fields:</p>
+        <ul>
+            <li>'id': tournament's id</li>
+            <li>'name': tournament's name</li>
+            <li>'location': tournament's location</li>
+            <li>'surface': surface the tournament's matches are played on</li>
+        </ul>
+        <p class="default_text">EXAMPLES:</p>
+        <p>/tournaments/austra --> [{"id": 0, "name": "Australian Hardcourt Championships", "location": "Adelaide", "surface": "Hard"}, {"id": 5, "name": "Australian Open", "location": "Melbourne", "surface": "Hard"}]</p>
+        <br><br><br><br>
+
+        <!-- /tournament -->
+        <p class="default_text">REQUEST: /tournament/&#60;tournament_id&#62;</p>
+        <p class="default_text">RESPONSE: A JSON dictionary with the following fields:</p>
+        <ul>
+            <li>'name': tournament's name</li>
+            <li>'location': tournament's location</li>
+            <li>'surface': surface the tournament's matches are played on</li>
+            <li>'years_held': a list of JSON dictionaries containing a year and tourmant_year_id</li>
+        </ul>
+        <p class="default_text">EXAMPLES:</p>
+        <p>/tournament/90 --> {"name": "Madrid Masters", "surface": "Hard", "location": "Madrid", "years_held": [{"id": 198, "year": 2002}, {"id": 265, "year": 2003}, {"id": 332, "year": 2004}, {"id": 399, "year": 2005}, {"id": 466, "year": 2006}, {"id": 532, "year": 2007}, {"id": 597, "year": 2008}]}</p>
+        <br><br><br><br>
+
+        <!-- /player_tournament -->
+        <p class="default_text">REQUEST: /player_tournament/&#60;player_tournament_id&#62;</p>
+        <p class="default_text">RESPONSE: A JSON dictionary with the following fields:</p>
+        <ul>
+            <li>'self_info': a JSON dictionary containing the athlete's name and id</li>
+            <li>'losers': a list of JSON dictionaries containing information on the athletes who lost to this one</li>
+            <li>'winners': a list of JSON dictionaries containing information on the athletes who beat this one</li>
+            <li> winners and losers each contain the following fields:</li>
+            <ul>
+                <li>'opponent_name':the opponent's name</li>
+                <li>'opponent_id':the opponent's id for this tournament</li>
+                <li>'score':the result of the match</li>
+                <li>'round':the round of the tournament the match happened in</li>
+            </ul>
+            <li>'tournament': the name of the tournament</li>
+        </ul>
+        <p class="default_text">EXAMPLES:</p>
+        <p>/player_tournament/6000 --> {"self_info": {"id": 29, "name": "D. Hrbaty"}, "losers": [{"opponent_name": "M. Mirnyi", "opponent_id": 80, "score": "6-2, 6-2, 7-6", "round": "1st Round"}], "winners": [{"opponent_name": "S. Grosjean", "opponent_id": 12, "score": "6-1, 6-1, 6-4", "round": "2nd Round"}], "tournament": "2001 BNP Paribas"}</p>
+        <br><br><br><br>
+
+        <!-- /tournament_year -->
+        <p class="default_text">REQUEST: /tournament_year/&#60;tournament_year_id&#62;</p>
+        <p class="default_text">RESPONSE: A JSON dictionary with the following fields:</p>
+        <ul>
+            <li>'id': the tournament_year's id</li>
+            <li>'name': name and year of the tournament</li>
+            <li>'location': tournament's location</li>
+            <li>'surface': surface the tournament's matches are played on</li>
+            <li>'champion': a JSON dictionary containing the id and name of the tournament's winner</li>
+            <li>'rounds': a list of JSON dictionaries containing the id and name of all rounds in the tournament</li>
+        </ul>
+        <p class="default_text">EXAMPLES:</p>
+        <p>/tournament_year/563 --> {"id": 563, "name": "2008 BMW Open", "surface": "Clay", "location": "Munich", "champion": {"id": 24677, "name": "F. Gonzalez"}, "rounds": [{"id": 0, "name": "1st Round"}, {"id": 1, "name": "2nd Round"}, {"id": 2, "name": "Quarterfinals"}, {"id": 3, "name": "Semifinals"}, {"id": 4, "name": "The Final"}]}</p>
+        <br><br><br><br>
+
+        <!-- /tournament_year?round -->
+        <p class="default_text">REQUEST: /tournament_year/&#60;tournament_year_id&#62;</p>
+        <p class="default_text">GET PARAMETERS: </p>
+        <p>round_id(optional), gives information about the particular round at the tournament</p>
+        <p class="default_text">RESPONSE: A list of JSON dictionaries, each representing one match, with the following fields:</p>
+        <ul>
+            <li>'round_name': athlete's name</li>
+            <li>'winner': a JSON dictionary with the match winner's name and id</li>
+            <li>'loser': a JSON dictionary with the match loser's name and id</li>
+            <li>'score': the result of the match</li>
+        </ul>
+        <p class="default_text">EXAMPLES:</p>
+        <p>/tournament_year/1076?round_id=3 --> [{"round_name": "Semifinals", "winner": {"id": 46001, "name": "M. Raonic"}, "loser": {"id": 46012, "name": "D. Goffin"}, "score": "6-3, 6-3, 3-6, 6-3"}, {"round_name": "Semifinals", "winner": {"id": 46024, "name": "N. Djokovic"}, "loser": {"id": 46029, "name": "R. Nadal"}, "score": "7-6, 7-6, 6-2"}]</p>
+        <br><br><br><br>
+
+
+
+
+
+    </body>
+</html>
