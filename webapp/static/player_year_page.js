@@ -19,6 +19,7 @@ function loadPlayerYear() {
         document.getElementById('career_record').innerHTML = player_stats['record'];
         document.getElementById('highest_ranking').innerHTML = player_stats['highest_ranking'];
         document.getElementById('tournament_wins').innerHTML = player_stats['tournament_wins'];
+        document.getElementById('breadcrumb').innerHTML = getBreadcrumbHTML(player_stats);
         let tournamentsHTML = getTournamentsHTML(player_stats['year_tournaments']);
         document.getElementById('tournaments').innerHTML = tournamentsHTML;
     })
@@ -35,6 +36,13 @@ function getTournamentsHTML(tournaments) {
         listContents+='<li><a href="'+getBaseURL()+'/tournament_year/'+tournament['id']+'">'+tournament['name']+'</a></li>';
     }
     return listContents;
+}
+
+function getBreadcrumbHTML(player_stats) {
+    let baseURL = getBaseURL();
+    let breadcrumb = '<a href="'+baseURL+'">Home</a> - ';
+    breadcrumb+='<a href="'+baseURL+'/player/'+player_stats['id']+'">'+player_stats['name']+'</a>';
+    return breadcrumb;
 }
 
 

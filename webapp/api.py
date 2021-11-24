@@ -108,6 +108,7 @@ def get_player_stats_json(year, player_id):
         end_year = 3000
     query_tuple = (start_year, end_year, int(player_id))
     player_stats = {
+    'id':player_id,
     'name':get_sql_data(get_name_from_id, get_name_from_id_query(),(player_id,)),
     'tournament_wins':get_sql_data(get_tournament_wins, get_tournament_wins_query(), query_tuple),
     'highest_ranking':get_sql_data(get_lowest_ranking, get_lowest_ranking_query(), query_tuple),
