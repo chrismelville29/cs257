@@ -14,8 +14,9 @@ function loadMatches() {
     .then((response) => response.json())
 
     .then(function(player_tournament_info) {
-        document.getElementById('tournament_name').innerHTML = player_tournament_info['tournament'];
+        document.getElementById('tournament_name').innerHTML = player_tournament_info['tournament']['year_name'];
         document.getElementById('player_name').innerHTML = getNameHTML(player_tournament_info['self_info']);
+        document.getElementById('breadcrumb').innerHTML = getBreadcrumbHTML(player_tournament_info['tournament']);
         let resultsHTML = getResultsHTML(player_tournament_info);
         document.getElementById('matches').innerHTML = resultsHTML;
     })
@@ -55,6 +56,14 @@ function getResult(selfInfo, result, isLoss) {
         return selfLink+' def. '+opponentLink+' '+result['score'];
     }
     return opponentLink+' def. '+selfLink+' '+result['score'];
+}
+
+function getBreadcrumbHTML(tournament) {
+    let baseURL = getBaseURL();
+    let breadcrumb = '<a href="'+baseURL+'">Home</a> - ';
+    breadcrumb+='<a href="'+baseURL+'/tournament/'+tournament['id']+'">'+tournament['name']+'</a> - ';
+    breadcrumb+='<a href="'+baseURL+'/tournament_year/'+tournament['year_id']+'">'+tournament['year_name']+'</a>';
+    return breadcrumb;
 }
 
 

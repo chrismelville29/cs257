@@ -14,29 +14,7 @@ api = flask.Blueprint('api', __name__)
 
 @api.route('/help')
 def get_help():
-    return '''REQUEST: /player/<player_id>
-    GET parameters: year (optional) -- gives information on a player's year instead of whole career
-    RESPONSE: A JSON dictionary which contains the following fields:
-    'name': athlete's name,
-    'tournament_wins': how many tournaments the athlete won, either over full career or selected year,
-    'highest_ranking': the highest ranking athlete reached, either over full career or selected year,
-    'record': the athlete's wins and losses, either over full career or selected year,
-    'years_active': only on the full career page - the years in which the athlete played in at least one tournament,
-    'year_tournaments': only on the single year page - the tournaments the athlete played in in the selected year
-    EXAMPLES: /player/6?year=2004 --> {"name": "R. Federer", "tournament_wins": "7", "highest_ranking": "2", "record": "71 - 16", "year": 2003, "year_tournaments": [*a very long list of tournaments*]}
-    /player/5 --> {"name": "P. Baccanello", "tournament_wins": "0", "highest_ranking": "135", "record": "2 - 7", "years_active": ["2000", "2003", "2004", "2005"]}
-
-    REQUEST: /tournament/<tournament_id>
-    GET parameters: year (optional) -- gives information on one specific year of a tournament
-    RESPONSE: A JSON dictionary which contains the following fields:
-    'name': tournament's name,
-    'surface': the court surface the tournament is played on,
-    'location': the location the tournament is played at,
-    'years_held': only in the full tournament page - the years that a tournament was held,
-    'winner': only in the single year page - the winner of the tournament in the selected year,
-    'runner-up': only in the single year page - the second place finisher of the tournament in the selected year
-    EXAMPLES: /tournament/5 --> {"name": Australian Open, "surface": Hard, "location": Melbourne, "years_held": ["2000", "2001", ..., "2015", "2016"]}
-    '''
+    return flask.render_template('help_page.html')
 
 @api.route('/players/<search_string>')
 def get_players_from_search(search_string):
@@ -154,7 +132,7 @@ def get_tournament_year_info_json(tournament_year_id):
     champion = get_sql_data(get_tournament_champ, get_tournament_champ_query(), (tournament_year_id,))
     tournament_year_info = {
     'id':int(tournament_year_id),
-    'name':get_sql_data(get_tournament_from_player, get_tournament_year_from_id_query(),(tournament_year_id,)),
+    'name':get_sql_data(get_name_from_id, get_tournament_year_from_id_query(),(tournament_year_id,)),
     'surface':get_sql_data(get_name_from_id, get_surface_from_year_query(),(tournament_year_id,)),
     'location':get_sql_data(get_name_from_id, get_location_from_year_query(),(tournament_year_id,)),
     'champion':champion,
@@ -213,7 +191,7 @@ def get_years_active(cursor):
 def get_name_from_id(cursor):
     for row in cursor:
         try:
-            return row[1] + ' ' + row[0]
+            return str(row[1]) + ' ' + row[0]
         except:
             return row[0]
 
@@ -267,7 +245,13 @@ def get_score_string(row, start_index):
 
 def get_tournament_from_player(cursor):
     for row in cursor:
-        return str(row[1]) +' '+ row[0]
+        tournament = {
+        'id':row[2],
+        'year_id':row[3],
+        'name':row[0],
+        'year_name':str(row[1])+' '+row[0]
+        }
+        return tournament
 
 def get_rounds(cursor):
     rounds = []
@@ -476,7 +460,7 @@ def get_winners_query():
     AND matches.loser_id = %s;'''
 
 def get_tournament_year_query():
-    return '''SELECT tournaments.name, tournament_years.year
+    return '''SELECT tournaments.name, tournament_years.year, tournaments.id, tournament_years.id
     FROM tournaments, tournament_years, player_tournaments
     WHERE player_tournaments.id = %s
     AND player_tournaments.tournament_id = tournament_years.id
