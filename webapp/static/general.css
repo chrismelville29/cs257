@@ -28,6 +28,10 @@ ul {
     text-indent: 150px;
 }
 
+.center_text {
+    text-align: center;
+}
+
 #half_block {
     width: 50%;
     float: left;
@@ -42,3 +46,4 @@ ul {
     width: 67%;
     float: left;
 }
+
