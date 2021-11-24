@@ -27,6 +27,7 @@ function loadTournamentYear() {
         document.getElementById('location').innerHTML = tournamentYearInfo['location'];
         document.getElementById('champion').innerHTML = getChampionHTML(tournamentYearInfo['champion']);
         document.getElementById('round_selector').innerHTML = getRoundsHTML(tournamentYearInfo['rounds']);
+        document.getElementById('breadcrumb').innerHTML = getBreadcrumbHTML(tournamentYearInfo);
     })
 
     .catch(function(error) {
@@ -80,6 +81,12 @@ function onRoundSelectorButton() {
     window.location.assign(link);
 }
 
+function getBreadcrumbHTML(tournamentYear) {
+    let baseURL = getBaseURL();
+    let breadcrumb = '<a href="'+baseURL+'">Home</a> - ';
+    breadcrumb+='<a href="'+baseURL+'/tournament/'+tournamentYear['tournament_id']+'">'+tournamentYear['name'].substring(5)+'</a>';
+    return breadcrumb;
+}
 
 function getBaseURL() {
     let baseURL = window.location.protocol

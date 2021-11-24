@@ -16,10 +16,11 @@ function loadTournamentYear() {
 
     .then((response) => response.json())
 
-    .then(function(tournament_year_info) {
-        document.getElementById('tournament_name').innerHTML = tournament_year_info['name'];
-        document.getElementById('surface').innerHTML = tournament_year_info['surface'];
-        document.getElementById('location').innerHTML = tournament_year_info['location'];
+    .then(function(tournamentYearInfo) {
+        document.getElementById('tournament_name').innerHTML = tournamentYearInfo['name'];
+        document.getElementById('surface').innerHTML = tournamentYearInfo['surface'];
+        document.getElementById('location').innerHTML = tournamentYearInfo['location'];
+        document.getElementById('breadcrumb').innerHTML = getBreadcrumbHTML(tournamentYearInfo);
     })
 
     .catch(function(error) {
@@ -55,6 +56,13 @@ function loadRound() {
 
 }
 
+function getBreadcrumbHTML(tournament) {
+    let baseURL = getBaseURL();
+    let breadcrumb = '<a href="'+baseURL+'">Home</a> - ';
+    breadcrumb+='<a href="'+baseURL+'/tournament/'+tournament['tournament_id']+'">'+tournament['name'].substring(5)+'</a> - ';
+    breadcrumb+='<a href="'+baseURL+'/tournament_year/'+tournament['id']+'">'+tournament['name']+'</a>';
+    return breadcrumb;
+}
 
 function getBaseURL() {
     let baseURL = window.location.protocol

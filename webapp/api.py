@@ -133,6 +133,7 @@ def get_tournament_year_info_json(tournament_year_id):
     champion = get_sql_data(get_tournament_champ, get_tournament_champ_query(), (tournament_year_id,))
     tournament_year_info = {
     'id':int(tournament_year_id),
+    'tournament_id':get_sql_data(get_name_from_id, get_tournament_from_year_query(),(tournament_year_id,)),
     'name':get_sql_data(get_name_from_id, get_tournament_year_from_id_query(),(tournament_year_id,)),
     'surface':get_sql_data(get_name_from_id, get_surface_from_year_query(),(tournament_year_id,)),
     'location':get_sql_data(get_name_from_id, get_location_from_year_query(),(tournament_year_id,)),
@@ -429,6 +430,12 @@ def get_tournament_years_query():
     FROM tournaments, tournament_years
     WHERE tournaments.id = %s
     AND tournaments.id = tournament_years.tournament_id;'''
+
+def get_tournament_from_year_query():
+    return '''SELECT tournaments.id
+    FROM tournaments, tournament_years
+    WHERE tournament_years.id = %s
+    AND tournament_years.tournament_id = tournaments.id;'''
 
 def get_player_tournaments_query():
     return '''SELECT player_tournaments.id, players.surname, players.initials
