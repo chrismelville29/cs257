@@ -14,6 +14,7 @@ function loadPlayer() {
     .then((response) => response.json())
 
     .then(function(player_stats) {
+        document.getElementById('breadcrumb').innerHTML = getBreadcrumbHTML();
         document.getElementById('player_name').innerHTML = player_stats['name'];
         document.getElementById('career_record').innerHTML = player_stats['record'];
         document.getElementById('highest_ranking').innerHTML = player_stats['highest_ranking'];
@@ -35,6 +36,12 @@ function getYearsActiveHTML(years) {
         listContents+=nextLine;
     }
     return listContents;
+}
+
+function getBreadcrumbHTML() {
+    let baseURL = getBaseURL();
+    let breadcrumb = '<a href="'+baseURL+'">Home</a>';
+    return breadcrumb;
 }
 
 function getBaseURL() {

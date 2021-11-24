@@ -14,6 +14,7 @@ function loadTournament() {
     .then((response) => response.json())
 
     .then(function(tournament_info) {
+        document.getElementById('breadcrumb').innerHTML = getBreadcrumbHTML();
         document.getElementById('tournament_name').innerHTML = tournament_info['name'];
         document.getElementById('surface').innerHTML = tournament_info['surface'];
         document.getElementById('location').innerHTML = tournament_info['location'];
@@ -35,6 +36,12 @@ function getTournamentYearsHTML(years) {
         listContents+=link;
     }
     return listContents;
+}
+
+function getBreadcrumbHTML() {
+    let baseURL = getBaseURL();
+    let breadcrumb = '<a href="'+baseURL+'">Home</a>';
+    return breadcrumb;
 }
 
 function getBaseURL() {
